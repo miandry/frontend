@@ -85,7 +85,7 @@
 </div>
 
 
-<nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 px-0 py-2 grid grid-cols-5">
+<!-- <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 px-0 py-2 grid grid-cols-5">
     <div class="flex flex-col items-center justify-center py-2 cursor-pointer">
         <div class="w-6 h-6 flex items-center justify-center mb-1">
             <i class="ri-home-line text-gray-400 text-lg"></i>
@@ -116,4 +116,4 @@
         </div>
         <span class="text-xs text-primary font-medium">Settings</span>
     </div>
-</nav>
+</nav> -->

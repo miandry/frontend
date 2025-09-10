@@ -1,4 +1,5 @@
 function initSignUpPage() {
+  document.body.style.overflow = "auto";
   // check box
   const termsCheckbox = document.getElementById("termsCheckbox");
   const termsCheck = document.getElementById("termsCheck");
@@ -6,9 +7,11 @@ function initSignUpPage() {
   // password toggle variable
   const togglePassword = document.getElementById("togglePassword");
   const passwordInput = document.getElementById("password");
-  const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
+  const toggleConfirmPassword = document.getElementById(
+    "toggleConfirmPassword"
+  );
   const confirmPasswordInput = document.getElementById("confirmPassword");
-    // form validation
+  // form validation
   const form = document.getElementById("signupForm");
   const email = document.getElementById("email");
   const username = document.getElementById("username");
@@ -16,7 +19,6 @@ function initSignUpPage() {
   const confirmPassword = document.getElementById("confirmPassword");
   const terms = document.getElementById("terms");
   const signUpErrorMsg = document.getElementById("signUpErrorMsg");
-
 
   // Password toggle
   togglePassword.addEventListener("click", function () {
@@ -189,6 +191,9 @@ function initSignUpPage() {
       };
       // Stocker en session
       sessionStorage.setItem("user", JSON.stringify(user));
+      // 🔹 notifier l'app Vue
+      window.app.isLoggedIn = true;
+      window.app.page = "add-product";
       signUpErrorMsg.classList.add("hidden");
       clearInput();
     } else {

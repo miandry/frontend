@@ -1,4 +1,5 @@
 function initSignInPage() {
+  document.body.style.overflow = "auto";
   const toggleButton = document.getElementById("togglePassword");
   const passwordInput = document.getElementById("passwordInput");
   const icon = toggleButton.querySelector("i");
@@ -72,6 +73,9 @@ function initSignInPage() {
       };
       // Stocker en session
       sessionStorage.setItem("user", JSON.stringify(user));
+      // 🔹 notifier l'app Vue
+      window.app.isLoggedIn = true;
+      window.app.page = "add-product";
       loginErrorMsg.classList.add("hidden");
     } else {
       loginErrorMsg.classList.remove("hidden");

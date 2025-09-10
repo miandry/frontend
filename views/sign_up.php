@@ -4,8 +4,8 @@ $header_title = "Sign up";
 include __DIR__ . '/../includes/auth-nav.php'; ?>
 <!-- auth navigation -->
 
-<div class="pt-20 pb-24 px-4">
-    <div class="bg-white rounded-xl shadow-sm p-6 mt-4">
+<div class="pt-20 px-4">
+    <div class="bg-white rounded-xl shadow-sm p-6 pt-0 mt-2">
         <h2 class="text-lg font-medium text-gray-900 mb-6">Create Account</h2>
         <form class="space-y-4" id="signupForm">
             <div class="mb-2 hidden" id="signUpErrorMsg">
@@ -100,7 +100,7 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
                 </button>
             <!-- </a> -->
 
-            <div class="text-center pt-4">
+            <div class="text-center">
                 <span class="text-gray-600 text-sm">Already have an account? </span>
                 <a href="javascript:void(0)" @click="page='sign-in'" class="text-primary font-medium text-sm cursor-pointer">Sign in</a>
             </div>

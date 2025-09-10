@@ -4,7 +4,7 @@ $header_title = "Sign in";
 include __DIR__ . '/../includes/auth-nav.php'; ?>
 <!-- end auth navigation -->
 
-<div class="pt-20 pb-24 px-4">
+<div class="pt-20 px-4">
     <div class="bg-white rounded-xl shadow-sm p-6 mt-4">
         <h2 class="text-lg font-medium text-gray-900 mb-6">Sign In</h2>
         <div class="space-y-4">

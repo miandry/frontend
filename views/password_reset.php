@@ -4,8 +4,8 @@ $header_title = "Reset password";
 include __DIR__ . '/../includes/auth-nav.php'; ?>
 <!-- auth navigation -->
 
-<div class="pt-20 pb-24 px-4">
-    <div class="bg-white rounded-xl shadow-sm p-6 mt-4">
+<div class="pt-20 px-4">
+    <div class="bg-white rounded-xl shadow-sm p-6 pt-0 mt-2">
         <div class="text-center mb-6">
             <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
                 <i class="ri-lock-password-line text-primary text-2xl"></i>

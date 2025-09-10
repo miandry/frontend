@@ -39,35 +39,64 @@
         :where([class^="ri-"])::before {
             content: "\f3c2";
         }
+
+        /* add product */
+        .image-upload-area {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23d1d5db" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 48px 48px;
+        }
+
+        .form-input {
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .form-input:focus {
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .dropdown-menu {
+            max-height: 200px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 
 <body>
     <div id="app">
-        <div v-if="page === 'sign-in'">
-            <?php
-            $header_title = "Sign in";
-            include 'mobile/views/sign_in.php'; ?>
-        </div>
+        <div v-if="!isLoggedIn">
+            <div v-if="page === 'sign-in'">
+                <?php
+                $header_title = "Sign in";
+                include 'mobile/views/sign_in.php'; ?>
+            </div>
 
-        <div v-if="page === 'sign-up'">
-            <?php
-            $header_title = "Sign up";
-            include 'mobile/views/sign_up.php'; ?>
-        </div>
+            <div v-if="page === 'sign-up'">
+                <?php
+                $header_title = "Sign up";
+                include 'mobile/views/sign_up.php'; ?>
+            </div>
 
-        <div v-if="page === 'password-reset'">
-            <?php
-            $header_title = "Reset password";
-            include 'mobile/views/password_reset.php'; ?>
-        </div>
+            <div v-if="page === 'password-reset'">
+                <?php
+                $header_title = "Reset password";
+                include 'mobile/views/password_reset.php'; ?>
+            </div>
 
-        <div v-if="page === 'password-reset'">
-            <?php
-            $header_title = "Reset password";
-            include 'mobile/views/password_reset.php'; ?>
+            <div v-if="page === 'password-reset'">
+                <?php
+                $header_title = "Reset password";
+                include 'mobile/views/password_reset.php'; ?>
+            </div>
         </div>
-
+        <div v-else>
+            <div v-if="page === 'add-product'">
+                <?php
+                include 'mobile/views/add-product.php'; ?>
+            </div>
+        </div>
     </div>
     <script src="/mobile/assets/js/auth/menu.js"></script>
 
@@ -76,14 +105,23 @@
             createApp
         } = Vue;
 
-        createApp({
+        window.app = createApp({
             data() {
                 return {
                     page: 'sign-in',
-                    history: [] // pile d’historique
+                    history: [],
+                    isLoggedIn: false
                 };
             },
             mounted() {
+                // Vérifier si user est dans sessionStorage
+                const userStr = sessionStorage.getItem("user");
+                if (userStr) {
+                    const user = JSON.parse(userStr);
+                    this.isLoggedIn = true;
+                    this.page = "add-product"
+                }
+
                 this.loadFor(this.page);
                 // initialiser le menu dès le premier montage
                 if (typeof initMenu === "function") {
@@ -123,6 +161,10 @@
                         'password-reset': {
                             src: '/mobile/assets/js/auth/reset-password.js',
                             init: 'initResetPasswordPage'
+                        },
+                        'add-product': {
+                            src: '/mobile/assets/js/product/add-product.js',
+                            init: 'initAddPage'
                         }
                     };
 
