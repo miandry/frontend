@@ -193,7 +193,7 @@ function initSignUpPage() {
       sessionStorage.setItem("user", JSON.stringify(user));
       // 🔹 notifier l'app Vue
       window.app.isLoggedIn = true;
-      window.app.page = "add-product";
+      window.app.page = "dashboard";
       signUpErrorMsg.classList.add("hidden");
       clearInput();
     } else {

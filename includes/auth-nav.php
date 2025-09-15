@@ -34,19 +34,19 @@
         </div>
         <div class="p-4">
             <div class="space-y-2">
-                <a href="#"
+                <a href="javascript:void(0)" @click="page='dashboard'"
                     class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
                     <div class="w-5 h-5 flex items-center justify-center mr-3">
-                        <i class="ri-user-line text-gray-500"></i>
+                        <i class="ri-dashboard-line text-gray-500"></i>
                     </div>
-                    <span>Profile</span>
+                    <span>Dashboard</span>
                 </a>
-                <a href="#"
+                <a href="javascript:void(0)" @click="page='add-product'"
                     class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
                     <div class="w-5 h-5 flex items-center justify-center mr-3">
-                        <i class="ri-wallet-line text-gray-500"></i>
+                        <i class="ri-add-box-line text-gray-500"></i>
                     </div>
-                    <span>Wallet</span>
+                    <span>Add product</span>
                 </a>
                 <a href="#"
                     class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
@@ -70,7 +70,7 @@
                     <span>Settings</span>
                 </a>
                 <div class="border-t border-gray-200 mt-4 pt-4">
-                    <a href="#"
+                    <a href="javascript:void(0);"
                         class="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg cursor-pointer"
                         id="logoutButton">
                         <div class="w-5 h-5 flex items-center justify-center mr-3">

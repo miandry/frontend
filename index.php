@@ -66,37 +66,37 @@
 
 <body>
     <div id="app">
-        <div v-if="!isLoggedIn">
-            <div v-if="page === 'sign-in'">
-                <?php
-                $header_title = "Sign in";
-                include 'mobile/views/sign_in.php'; ?>
-            </div>
+        <template v-if="isReady">
+            <div v-if="!isLoggedIn">
+                <div v-if="page === 'sign-in'">
+                    <?php
+                    $header_title = "Sign in";
+                    include 'mobile/views/sign_in.php'; ?>
+                </div>
 
-            <div v-if="page === 'sign-up'">
-                <?php
-                $header_title = "Sign up";
-                include 'mobile/views/sign_up.php'; ?>
-            </div>
+                <div v-if="page === 'sign-up'">
+                    <?php
+                    $header_title = "Sign up";
+                    include 'mobile/views/sign_up.php'; ?>
+                </div>
 
-            <div v-if="page === 'password-reset'">
-                <?php
-                $header_title = "Reset password";
-                include 'mobile/views/password_reset.php'; ?>
+                <div v-if="page === 'password-reset'">
+                    <?php
+                    $header_title = "Reset password";
+                    include 'mobile/views/password_reset.php'; ?>
+                </div>
             </div>
-
-            <div v-if="page === 'password-reset'">
-                <?php
-                $header_title = "Reset password";
-                include 'mobile/views/password_reset.php'; ?>
+            <div v-else>
+                <div v-if="page === 'dashboard'">
+                    <?php
+                    include 'mobile/views/dashboard.php'; ?>
+                </div>
+                <div v-if="page === 'add-product'">
+                    <?php
+                    include 'mobile/views/add-product.php'; ?>
+                </div>
             </div>
-        </div>
-        <div v-else>
-            <div v-if="page === 'add-product'">
-                <?php
-                include 'mobile/views/add-product.php'; ?>
-            </div>
-        </div>
+        </template>
     </div>
     <script src="/mobile/assets/js/auth/menu.js"></script>
 
@@ -105,23 +105,28 @@
             createApp
         } = Vue;
 
+
         window.app = createApp({
             data() {
                 return {
                     page: 'sign-in',
                     history: [],
-                    isLoggedIn: false
+                    isLoggedIn: false,
+                    isReady: false,
                 };
             },
-            mounted() {
-                // Vérifier si user est dans sessionStorage
+            created() {
+                // Vérifier avant même le montage
                 const userStr = sessionStorage.getItem("user");
                 if (userStr) {
-                    const user = JSON.parse(userStr);
                     this.isLoggedIn = true;
-                    this.page = "add-product"
+                    this.page = "dashboard";
                 }
 
+                // On débloque l’affichage
+                this.isReady = true;
+            },
+            mounted() {
                 this.loadFor(this.page);
                 // initialiser le menu dès le premier montage
                 if (typeof initMenu === "function") {
@@ -150,6 +155,10 @@
                 },
                 loadFor(page) {
                     const map = {
+                        'dashboard': {
+                            src: '/mobile/assets/js/auth/dashboard.js',
+                            init: 'initDashboardPage'
+                        },
                         'sign-in': {
                             src: '/mobile/assets/js/auth/sign-in.js',
                             init: 'initSignInPage'
