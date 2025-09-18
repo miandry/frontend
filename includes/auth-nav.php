@@ -48,41 +48,42 @@
                     </div>
                     <span>Category</span>
                 </a>
-                <a href="javascript:void(0)" @click="page='all-products'"
-                    class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
-                    <div class="w-5 h-5 flex items-center justify-center mr-3">
-                        <i class="ri-add-box-line text-gray-500"></i>
+                <div class="menu-section">
+                    <button
+                        class="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center">
+                                <i class="ri-product-hunt-line text-gray-500"></i>
+                            </div>
+                            <span class="ml-3 text-gray-700">Product</span>
+                        </div>
+                        <i class="ri-arrow-down-s-line transition-transform"></i>
+                    </button>
+                    <div class="submenu pl-12 pr-4">
+                        <a href="javascript:void(0)" @click="page='all-products'"
+                            class="block py-2 text-sm text-gray-600 hover:text-primary">All Products</a>
+                        <a href="javascript:void(0)" @click="page='add-product'"
+                            class="block py-2 text-sm text-gray-600 hover:text-primary">Add New</a>
                     </div>
-                    <span>Products</span>
-                </a>
-                <a href="javascript:void(0)" @click="page='add-product'"
-                    class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
-                    <div class="w-5 h-5 flex items-center justify-center mr-3">
-                        <i class="ri-add-box-line text-gray-500"></i>
+                </div>
+                <div class="menu-section">
+                    <button
+                        class="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center">
+                                <i class="ri-store-line text-gray-500"></i>
+                            </div>
+                            <span class="ml-3 text-gray-700">Stock</span>
+                        </div>
+                        <i class="ri-arrow-down-s-line transition-transform"></i>
+                    </button>
+                    <div class="submenu pl-12 pr-4">
+                        <a href="javascript:void(0)" @click="page='stock-in'"
+                            class="block py-2 text-sm text-gray-600 hover:text-primary">Add stock in</a>
+                        <a href="javascript:void(0)"
+                            class="block py-2 text-sm text-gray-600 hover:text-primary">Add stock out</a>
                     </div>
-                    <span>Add product</span>
-                </a>
-                <a href="#"
-                    class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
-                    <div class="w-5 h-5 flex items-center justify-center mr-3">
-                        <i class="ri-history-line text-gray-500"></i>
-                    </div>
-                    <span>History</span>
-                </a>
-                <a href="#"
-                    class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
-                    <div class="w-5 h-5 flex items-center justify-center mr-3">
-                        <i class="ri-customer-service-line text-gray-500"></i>
-                    </div>
-                    <span>Support</span>
-                </a>
-                <a href="#"
-                    class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
-                    <div class="w-5 h-5 flex items-center justify-center mr-3">
-                        <i class="ri-settings-line text-gray-500"></i>
-                    </div>
-                    <span>Settings</span>
-                </a>
+                </div>
                 <div class="border-t border-gray-200 mt-4 pt-4">
                     <a href="javascript:void(0);"
                         class="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg cursor-pointer"

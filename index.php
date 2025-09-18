@@ -61,6 +61,16 @@
             max-height: 200px;
             overflow-y: auto;
         }
+
+        .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+
+        .submenu.active {
+            max-height: 200px;
+        }
     </style>
 </head>
 
@@ -102,6 +112,10 @@
                 <div v-if="page === 'add-category'">
                     <?php
                     include 'mobile/views/add-category.php'; ?>
+                </div>
+                <div v-if="page === 'stock-in'">
+                    <?php
+                    include 'mobile/views/stock_in.php'; ?>
                 </div>
             </div>
         </template>
@@ -197,6 +211,10 @@
                         'add-category': {
                             src: '/mobile/assets/js/category/add-category.js',
                             init: 'initCategoryPage'
+                        },
+                        'stock-in': {
+                            src: '/mobile/assets/js/stock/stock-in.js',
+                            init: 'initStockInPage'
                         }
                     };
 
@@ -215,9 +233,11 @@
                         if (typeof window[config.init] === "function") {
                             window[config.init]();
                         }
-                        if (typeof initMenu === "function") {
-                            initMenu();
-                        }
+                        app.$nextTick(() => {
+                            if (typeof initMenu === "function") {
+                                initMenu();
+                            }
+                        });
                     };
 
                     document.body.appendChild(script);

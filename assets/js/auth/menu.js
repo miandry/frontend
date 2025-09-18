@@ -5,7 +5,7 @@ function initMenu() {
   const menuOverlay = document.getElementById("menuOverlay");
   const closeButton = document.getElementById("closeMenu");
   const logoutButton = document.getElementById("logoutButton");
-  
+
   if (!sessionStorage.getItem("user")) {
     logoutButton.classList.add("hidden");
   } else {
@@ -28,7 +28,8 @@ function initMenu() {
 
     const confirmDialog = document.createElement("div");
     confirmDialog.id = "logoutConfirmDialog";
-    confirmDialog.className = "fixed inset-0 z-50 flex items-center justify-center";
+    confirmDialog.className =
+      "fixed inset-0 z-50 flex items-center justify-center";
     confirmDialog.innerHTML = `
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
       <div class="relative bg-white rounded-xl p-6 w-80 space-y-4">
@@ -73,4 +74,36 @@ function initMenu() {
     logoutButton.addEventListener("click", handleLogout);
     logoutButton.dataset.bound = "true";
   }
+
+  // Accordion Menu
+  const menuSections = document.querySelectorAll(".menu-section");
+  menuSections.forEach((section) => {
+    const button = section.querySelector("button");
+    const submenu = section.querySelector(".submenu");
+    const arrow = button.querySelector(".ri-arrow-down-s-line");
+
+    // vérifier si déjà attaché
+    if (button.dataset.accordionBound) return;
+
+    button.addEventListener("click", () => {
+      const isActive = button.classList.contains("active");
+
+      menuSections.forEach((otherSection) => {
+        if (otherSection !== section) {
+          otherSection.querySelector("button").classList.remove("active");
+          otherSection.querySelector(".submenu").classList.remove("active");
+          otherSection.querySelector(".ri-arrow-down-s-line").style.transform =
+            "rotate(0deg)";
+        }
+      });
+
+      button.classList.toggle("active");
+      submenu.classList.toggle("active");
+      arrow.style.transform = button.classList.contains("active")
+        ? "rotate(180deg)"
+        : "rotate(0deg)";
+    });
+
+    button.dataset.accordionBound = "true";
+  });
 }
