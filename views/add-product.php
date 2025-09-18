@@ -2,24 +2,7 @@
 $header_title = "Add product";
 include __DIR__ . '/../includes/auth-nav.php'; ?>
 
-<div class="min-h-screen flex flex-col">
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-gray-200 px-4 py-3 sticky top-0 z-20">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <a href="https://readdy.ai/home/3a05c30a-4ff6-4426-9fe9-ac94a7137195/e6217220-4989-4827-941b-616335a127a2"
-                    data-readdy="true"
-                    class="w-8 h-8 flex items-center justify-center cursor-pointer hover:bg-gray-100 rounded-lg transition-colors">
-                    <i class="ri-arrow-left-line text-gray-600 text-xl"></i>
-                </a>
-                <h1 class="text-lg font-semibold text-gray-900">Ajouter un produit</h1>
-            </div>
-            <div
-                class="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center cursor-pointer">
-                <span class="text-white font-semibold text-sm">JD</span>
-            </div>
-        </div>
-    </header>
+<div class="min-h-screen flex flex-col pt-12">
     <!-- Main Content -->
     <main class="flex-1 px-4 py-6">
         <form id="productForm" class="space-y-6">
@@ -37,6 +20,7 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
                         <p class="text-sm font-medium text-gray-700 mb-1">Ajouter une photo</p>
                         <p class="text-xs text-gray-500">PNG, JPG jusqu'à 10MB</p>
                     </div>
+                    <p class="text-sm text-red-500 ms-2 hidden" id="imgError"></p>
                 </div>
             </div>
             <!-- Product Information -->
@@ -50,14 +34,16 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
                         <input type="text" id="productName" name="productName" required
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg form-input text-sm"
                             placeholder="Ex: MacBook Pro 13 pouces">
+                        <p class="text-sm text-red-500 ms-2 hidden" id="pNameError"></p>
                     </div>
                     <!-- Description -->
                     <div>
                         <label for="productDescription"
                             class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                        <textarea id="productDescription" name="productDescription" rows="3"
+                        <textarea id="productDescription" name="productDescription" rows="3" required
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg form-input text-sm resize-none"
                             placeholder="Description détaillée du produit..."></textarea>
+                        <p class="text-sm text-red-500 ms-2 hidden" id="descError"></p>
                     </div>
                     <!-- Category -->
                     <div class="relative">
@@ -71,24 +57,9 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
                             </button>
                             <div id="categoryDropdown"
                                 class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 hidden dropdown-menu">
-                                <div class="py-2">
-                                    <button type="button"
-                                        class="category-option w-full px-4 py-2 text-left text-sm hover:bg-gray-100 cursor-pointer"
-                                        data-value="electronique">Électronique</button>
-                                    <button type="button"
-                                        class="category-option w-full px-4 py-2 text-left text-sm hover:bg-gray-100 cursor-pointer"
-                                        data-value="informatique">Informatique</button>
-                                    <button type="button"
-                                        class="category-option w-full px-4 py-2 text-left text-sm hover:bg-gray-100 cursor-pointer"
-                                        data-value="mobilier">Mobilier</button>
-                                    <button type="button"
-                                        class="category-option w-full px-4 py-2 text-left text-sm hover:bg-gray-100 cursor-pointer"
-                                        data-value="fournitures">Fournitures</button>
-                                    <button type="button"
-                                        class="category-option w-full px-4 py-2 text-left text-sm hover:bg-gray-100 cursor-pointer"
-                                        data-value="equipement">Équipement</button>
-                                </div>
+                                <div id="categoryList" class="py-2"></div>
                             </div>
+                            <p class="text-sm text-red-500 ms-2 hidden" id="catError">Veuillez sélectionner une catégorie.</p>
                         </div>
                         <input type="hidden" id="selectedCategory" name="category" required>
                     </div>
@@ -101,7 +72,7 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
                     <label for="unitPrice" class="block text-sm font-medium text-gray-700 mb-2">Prix unitaire (Ar)
                         *</label>
                     <div class="relative">
-                        <input type="number" id="unitPrice" name="unitPrice" required min="0" step="100"
+                        <input type="number" id="unitPrice" name="unitPrice" required
                             class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg form-input text-sm"
                             placeholder="0">
                         <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">Ar

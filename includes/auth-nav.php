@@ -1,6 +1,6 @@
 <nav class="fixed top-0 w-full bg-primary z-50 px-4 py-4 flex items-center justify-between">
     <div class="flex items-center space-x-3">
-        <div class="w-6 h-6 flex items-center justify-center cursor-pointer" @click="goBack" v-if="history.length > 0">
+        <div class="w-6 h-6 flex items-center justify-center cursor-pointer hidden" @click="goBack" v-if="history.length > 0">
             <i class="ri-arrow-left-line text-white text-lg"></i>
         </div>
         <div class="w-6 h-6 flex items-center justify-center cursor-pointer">
@@ -40,6 +40,20 @@
                         <i class="ri-dashboard-line text-gray-500"></i>
                     </div>
                     <span>Dashboard</span>
+                </a>
+                <a href="javascript:void(0)" @click="page='add-category'"
+                    class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
+                    <div class="w-5 h-5 flex items-center justify-center mr-3">
+                        <i class="ri-add-box-line text-gray-500"></i>
+                    </div>
+                    <span>Category</span>
+                </a>
+                <a href="javascript:void(0)" @click="page='all-products'"
+                    class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
+                    <div class="w-5 h-5 flex items-center justify-center mr-3">
+                        <i class="ri-add-box-line text-gray-500"></i>
+                    </div>
+                    <span>Products</span>
                 </a>
                 <a href="javascript:void(0)" @click="page='add-product'"
                     class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
@@ -83,37 +97,7 @@
         </div>
     </div>
 </div>
-
-
-<!-- <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 px-0 py-2 grid grid-cols-5">
-    <div class="flex flex-col items-center justify-center py-2 cursor-pointer">
-        <div class="w-6 h-6 flex items-center justify-center mb-1">
-            <i class="ri-home-line text-gray-400 text-lg"></i>
-        </div>
-        <span class="text-xs text-gray-400">Home</span>
-    </div>
-    <div class="flex flex-col items-center justify-center py-2 cursor-pointer">
-        <div class="w-6 h-6 flex items-center justify-center mb-1">
-            <i class="ri-exchange-line text-gray-400 text-lg"></i>
-        </div>
-        <span class="text-xs text-gray-400">Transactions</span>
-    </div>
-    <div class="flex flex-col items-center justify-center py-2 cursor-pointer">
-        <div class="w-6 h-6 flex items-center justify-center mb-1">
-            <i class="ri-apps-line text-gray-400 text-lg"></i>
-        </div>
-        <span class="text-xs text-gray-400">Components</span>
-    </div>
-    <div class="flex flex-col items-center justify-center py-2 cursor-pointer">
-        <div class="w-6 h-6 flex items-center justify-center mb-1">
-            <i class="ri-bank-card-line text-gray-400 text-lg"></i>
-        </div>
-        <span class="text-xs text-gray-400">My Cards</span>
-    </div>
-    <div class="flex flex-col items-center justify-center py-2 cursor-pointer">
-        <div class="w-6 h-6 flex items-center justify-center mb-1">
-            <i class="ri-settings-line text-primary text-lg"></i>
-        </div>
-        <span class="text-xs text-primary font-medium">Settings</span>
-    </div>
-</nav> -->
+<div id="page-loader"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/10 backdrop-blur-sm hidden">
+    <div class="w-12 h-12 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+</div>

@@ -95,6 +95,14 @@
                     <?php
                     include 'mobile/views/add-product.php'; ?>
                 </div>
+                <div v-if="page === 'all-products'">
+                    <?php
+                    include 'mobile/views/products.php'; ?>
+                </div>
+                <div v-if="page === 'add-category'">
+                    <?php
+                    include 'mobile/views/add-category.php'; ?>
+                </div>
             </div>
         </template>
     </div>
@@ -104,7 +112,6 @@
         const {
             createApp
         } = Vue;
-
 
         window.app = createApp({
             data() {
@@ -116,31 +123,38 @@
                 };
             },
             created() {
-                // Vérifier avant même le montage
+                // Vérifier si l'utilisateur est connecté
                 const userStr = sessionStorage.getItem("user");
                 if (userStr) {
                     this.isLoggedIn = true;
-                    this.page = "dashboard";
                 }
 
-                // On débloque l’affichage
+                // Récupérer la dernière page visitée
+                const savedPage = sessionStorage.getItem("currentPage");
+                if (savedPage) {
+                    this.page = savedPage;
+                } else {
+                    this.page = this.isLoggedIn ? "dashboard" : "sign-in";
+                }
+
                 this.isReady = true;
             },
             mounted() {
                 this.loadFor(this.page);
-                // initialiser le menu dès le premier montage
                 if (typeof initMenu === "function") {
                     initMenu();
                 }
             },
             watch: {
                 page(newPage, oldPage) {
-                    if (oldPage) {
-                        this.history.push(oldPage); // on garde l’ancienne page
+                    if (oldPage && oldPage !== newPage) {
+                        this.history.push(oldPage);
                     }
+                    // Sauvegarder la page actuelle pour persistance
+                    sessionStorage.setItem("currentPage", newPage);
+
                     this.$nextTick(() => {
                         this.loadFor(newPage);
-
                         if (typeof initMenu === "function") {
                             initMenu();
                         }
@@ -150,7 +164,8 @@
             methods: {
                 goBack() {
                     if (this.history.length > 0) {
-                        this.page = this.history.pop(); // revenir à la page précédente
+                        this.page = this.history.pop();
+                        sessionStorage.setItem("currentPage", this.page); // mettre à jour la page courante
                     }
                 },
                 loadFor(page) {
@@ -171,16 +186,24 @@
                             src: '/mobile/assets/js/auth/reset-password.js',
                             init: 'initResetPasswordPage'
                         },
+                        'all-products': {
+                            src: '/mobile/assets/js/product/products.js',
+                            init: 'initProductsPage'
+                        },
                         'add-product': {
                             src: '/mobile/assets/js/product/add-product.js',
                             init: 'initAddPage'
+                        },
+                        'add-category': {
+                            src: '/mobile/assets/js/category/add-category.js',
+                            init: 'initCategoryPage'
                         }
                     };
 
                     const config = map[page];
                     if (!config) return;
 
-                    // supprimer les anciens scripts dynamiques
+                    // Supprimer les anciens scripts dynamiques
                     document.querySelectorAll('script[data-page-script]').forEach(s => s.remove());
 
                     const script = document.createElement('script');
