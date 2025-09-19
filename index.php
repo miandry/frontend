@@ -163,7 +163,9 @@
                 this.isReady = true;
             },
             mounted() {
-                // this.loadFor(this.page);
+                if (this.page != 'all-products' ) {
+                    this.loadFor(this.page);
+                }
                 if (typeof initMenu === "function") {
                     initMenu();
                 }
