@@ -3,14 +3,38 @@ function initProductsPage() {
   let pageNumber = 0;
   let totalProducts = 0;
   let totalPages = 0;
+  let searchTerm = "";
+  let dateFilterValue = "desc";
+  let catFilterValue = "";
+  let catQuery = "";
   const perPage = 10;
   const loadMore = document.getElementById("loadMore");
+  const searchProductInput = document.getElementById("searchProductInput");
+  // filter variable
+  const filterBtn = document.getElementById("filterBtn");
+  const filterPanel = document.getElementById("filterPanel");
+  const closeFilterBtn = document.getElementById("closeFilterBtn");
+  const prCategory = document.getElementById("prCategory");
+  const prDate = document.getElementById("prDate");
+  
+  
+  filterBtn.addEventListener("click", function () {
+    filterPanel.classList.add("active");
+  });
+  closeFilterBtn.addEventListener("click", function () {
+    filterPanel.classList.remove("active");
+  });
+
   // Charger les catégories depuis l’API
   async function loadProducts() {
-    showLoader();
+    // showLoader();
+    if (catFilterValue) {
+      catQuery = catFilterValue;
+      // &filters[field_category][val]=1
+    }
     try {
       const response = await fetch(
-        `/api/v2/node/product?sort[val]=nid&sort[op]=desc&pager=${pageNumber}&offset=${perPage}`
+        `/api/v2/node/product?sort[val]=nid&sort[op]=${dateFilterValue}&filters[title][val]=${searchTerm}${catQuery}&filters[title][op]=CONTAINS&pager=${pageNumber}&offset=${perPage}`
       );
       const dataArray = await response.json();
       let data = dataArray.rows;
@@ -39,17 +63,32 @@ function initProductsPage() {
     } catch (error) {
       console.error("Error loading products:", error);
     } finally {
-      hideLoader();
+      // hideLoader();
     }
   }
+
+  searchProductInput.addEventListener("input", function () {
+    searchTerm = this.value.trim().toLowerCase();
+    // fait le recherche a partir de 4 caractere
+    if (searchTerm.length > 3 || searchTerm == "") {
+      loadProducts();
+    }
+  });
+
+  applyFilters.addEventListener('click', function () {
+    dateFilterValue = prDate.value;
+    catFilterValue = "&filters[field_category][val]=" + prCategory.value;
+    loadProducts();
+    filterPanel.classList.remove("active");
+  })
 
   function renderProducts() {
     const container = document.getElementById("productList");
     container.innerHTML = "";
-
-    container.innerHTML = products
-      .map(
-        (pr) => `
+    if (products.length > 0) {
+      container.innerHTML = products
+        .map(
+          (pr) => `
                     <div class="bg-white p-2 rounded-lg shadow-sm border border-gray-100" data-id="${
                       pr.nid
                     }">
@@ -76,8 +115,15 @@ function initProductsPage() {
                     </div>
 
             `
-      )
-      .join("");
+        )
+        .join("");
+    } else {
+      container.innerHTML = `
+                <div class="mt-8 px-3 py-2 text-center hover:bg-gray-50 rounded cursor-pointer">
+                    <p class="font-medium text-center text-gray-500">No items found</p>
+                  </div>
+            `;
+    }
   }
 
   loadMore.addEventListener("click", function () {
@@ -109,5 +155,29 @@ function initProductsPage() {
     document.getElementById("page-loader").classList.add("hidden");
   }
 
+  let categories = [];
+
+  async function loadCategories() {
+    try {
+      const response = await fetch(
+        "/api/v2/taxonomy_term/category?sort[val]=name&sort[op]=asc"
+      );
+      const data = await response.json();
+      categories = data.rows;
+
+      // Construire le select
+      const select = document.getElementById("prCategory");
+      categories.forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat.tid;       // si tid est l'identifiant
+        option.textContent = cat.name; // si name est le libellé
+        select.appendChild(option);
+      });
+
+    } catch (error) {
+      console.error("Error loading categories:", error);
+    }
+  }
+  loadCategories();
   loadProducts();
 }

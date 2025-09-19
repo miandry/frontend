@@ -71,6 +71,15 @@
         .submenu.active {
             max-height: 200px;
         }
+
+        .filter-panel {
+            transform: translateY(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .filter-panel.active {
+            transform: translateY(0);
+        }
     </style>
 </head>
 
@@ -154,7 +163,7 @@
                 this.isReady = true;
             },
             mounted() {
-                this.loadFor(this.page);
+                // this.loadFor(this.page);
                 if (typeof initMenu === "function") {
                     initMenu();
                 }

@@ -9,7 +9,7 @@ function initStockInPage() {
   productSearch.addEventListener("input", async function () {
     const searchTerm = this.value.trim().toLowerCase();
     // fait le recherche a partir de 4 caractere
-    if (searchTerm.length > 3) {
+    if (searchTerm.length > 3 || searchTerm == "") {
       // Charger les catégories depuis l’API
       try {
         const response = await fetch(

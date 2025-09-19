@@ -5,11 +5,14 @@ function initMenu() {
   const menuOverlay = document.getElementById("menuOverlay");
   const closeButton = document.getElementById("closeMenu");
   const logoutButton = document.getElementById("logoutButton");
+  const menuBurger = document.getElementById("menuBurger");
 
   if (!sessionStorage.getItem("user")) {
     logoutButton.classList.add("hidden");
+    menuBurger.classList.add("hidden");
   } else {
     logoutButton.classList.remove("hidden");
+    menuBurger.classList.remove("hidden");
   }
 
   function openMenu() {

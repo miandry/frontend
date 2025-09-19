@@ -1,5 +1,5 @@
 <nav class="fixed top-0 w-full bg-primary z-50 px-4 py-4 flex items-center justify-between">
-    <div class="flex items-center space-x-3">
+    <div class="flex items-center space-x-3" id="menuBurger">
         <div class="w-6 h-6 flex items-center justify-center cursor-pointer hidden" @click="goBack" v-if="history.length > 0">
             <i class="ri-arrow-left-line text-white text-lg"></i>
         </div>
