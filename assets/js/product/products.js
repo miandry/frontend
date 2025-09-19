@@ -77,7 +77,12 @@ function initProductsPage() {
 
   applyFilters.addEventListener('click', function () {
     dateFilterValue = prDate.value;
-    catFilterValue = "&filters[field_category][val]=" + prCategory.value;
+    if (prCategory.value) {
+      catFilterValue = "&filters[field_category][val]=" + prCategory.value;
+    } else {
+      catFilterValue = "";
+
+    }
     loadProducts();
     filterPanel.classList.remove("active");
   })
