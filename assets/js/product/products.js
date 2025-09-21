@@ -30,7 +30,6 @@ function initProductsPage() {
     // showLoader();
     if (catFilterValue) {
       catQuery = catFilterValue;
-      // &filters[field_category][val]=1
     }
     try {
       const response = await fetch(
@@ -81,7 +80,6 @@ function initProductsPage() {
       catFilterValue = "&filters[field_category][val]=" + prCategory.value;
     } else {
       catFilterValue = "";
-
     }
     loadProducts();
     filterPanel.classList.remove("active");

@@ -46,7 +46,7 @@
                     <div class="w-5 h-5 flex items-center justify-center mr-3">
                         <i class="ri-add-box-line text-gray-500"></i>
                     </div>
-                    <span>Category</span>
+                    <span>Categories</span>
                 </a>
                 <div class="menu-section">
                     <button
@@ -55,15 +55,15 @@
                             <div class="w-5 h-5 flex items-center justify-center">
                                 <i class="ri-product-hunt-line text-gray-500"></i>
                             </div>
-                            <span class="ml-3 text-gray-700">Product</span>
+                            <span class="ml-3 text-gray-700">Produit</span>
                         </div>
                         <i class="ri-arrow-down-s-line transition-transform"></i>
                     </button>
                     <div class="submenu pl-12 pr-4">
                         <a href="javascript:void(0)" @click="page='all-products'"
-                            class="block py-2 text-sm text-gray-600 hover:text-primary">All Products</a>
+                            class="block py-2 text-sm text-gray-600 hover:text-primary">List</a>
                         <a href="javascript:void(0)" @click="page='add-product'"
-                            class="block py-2 text-sm text-gray-600 hover:text-primary">Add New</a>
+                            class="block py-2 text-sm text-gray-600 hover:text-primary">Ajouter</a>
                     </div>
                 </div>
                 <div class="menu-section">
@@ -79,9 +79,9 @@
                     </button>
                     <div class="submenu pl-12 pr-4">
                         <a href="javascript:void(0)" @click="page='stock-in'"
-                            class="block py-2 text-sm text-gray-600 hover:text-primary">Add stock in</a>
+                            class="block py-2 text-sm text-gray-600 hover:text-primary">Nouvelle entrée</a>
                         <a href="javascript:void(0)"
-                            class="block py-2 text-sm text-gray-600 hover:text-primary">Add stock out</a>
+                            class="block py-2 text-sm text-gray-600 hover:text-primary">Nouvelle sortie</a>
                     </div>
                 </div>
                 <div class="border-t border-gray-200 mt-4 pt-4">
@@ -91,7 +91,7 @@
                         <div class="w-5 h-5 flex items-center justify-center mr-3">
                             <i class="ri-logout-box-line text-red-600"></i>
                         </div>
-                        <span>Logout</span>
+                        <span>Se déconnecter</span>
                     </a>
                 </div>
             </div>
