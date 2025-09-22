@@ -1,4 +1,4 @@
-function initStockInPage() {
+function initStockOutPage() {
   //     PRODUCT SEARCH;
   showLoader();
   const productSearch = document.getElementById("productSearch");
@@ -58,10 +58,6 @@ function initStockInPage() {
   function showSelected(id, title, quantity) {
     productId.value = id;
     productSearch.value = title;
-    prQuantityDefault = quantity;
-    document.getElementById("quantity").value = quantity;
-    document.getElementById("qttyDipso").textContent = quantity;
-    document.getElementsByClassName("qttyDipso")[0].classList.remove("hidden");
     productDropdown.classList.add("hidden");
   }
 
@@ -74,39 +70,18 @@ function initStockInPage() {
     }
   });
 
-  //   TOTAL CALCULATOR
-  const quantityInput = document.getElementById("quantity");
-  const unitPriceInput = document.getElementById("unitPrice");
-  const totalValueDisplay = document.getElementById("totalValue");
-
-  function calculateTotal() {
-    const quantity = parseFloat(quantityInput.value) || 0;
-    const unitPrice = parseFloat(unitPriceInput.value) || 0;
-    const total = quantity * unitPrice;
-    totalValueDisplay.textContent = `Ar ${total.toLocaleString("fr-FR")}`;
-  }
-  quantityInput.addEventListener("input", calculateTotal);
-  unitPriceInput.addEventListener("input", calculateTotal);
-
   //   FORM HANDLER
   const form = document.getElementById("stockEntryForm");
-  const entryDateInput = document.getElementById("entryDate");
-  // const successModal = document.getElementById("successModal");
-  const closeModal = document.getElementById("closeModal");
-  const today = new Date().toISOString().split("T")[0];
-  entryDateInput.value = today;
   form.addEventListener("submit", async function (e) {
-    showLoader();
     e.preventDefault();
+    showLoader();
     const data = {
       pId: document.getElementById("productId").value,
       product: document.getElementById("productSearch").value,
       prQuantityDefault: prQuantityDefault,
       quantity: document.getElementById("quantity").value,
-      unitPrice: document.getElementById("unitPrice").value,
-      sellingPrice: document.getElementById("sellingPrice").value,
-      entryDate: document.getElementById("entryDate").value,
       productDescription: document.getElementById("productDescription").value,
+      stockRaison: document.getElementById("stockRaison").value
     };
 
     try {
@@ -117,26 +92,10 @@ function initStockInPage() {
         status: 1,
         title: data.product + " stock",
         field_product_id: parseInt(data.pId),
-        field_price: parseFloat(data.unitPrice),
-        field_date_entree: data.entryDate,
         field_quantite: parseInt(data.quantity),
-        field_total_price: parseFloat(data.unitPrice * data.quantity),
         field_description: data.productDescription,
-        field_type: "Entrée",
-        field_prix_de_vente: parseFloat(data.sellingPrice),
-      };
-
-      const productData = {
-        nid: parseInt(data.pId),
-        uid: user.id,
-        status: 1,
-        entity_type: "node",
-        bundle: "product",
-        field_prix_vente: parseFloat(data.sellingPrice),
-        field_price: parseFloat(data.unitPrice),
-        field_quantite_disponible: parseInt(
-          data.prQuantityDefault - data.quantity
-        ),
+        field_type: "Sortie",
+        field_raison: data.stockRaison,
       };
 
       const res = await fetch(API_BASE, {
@@ -147,22 +106,10 @@ function initStockInPage() {
         body: JSON.stringify(newStockIn),
       });
 
-      const resPr = await fetch(API_BASE, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(productData),
-      });
-
       const payload = await res.json();
-      const payloadPr = await resPr.json();
 
       if (!res.ok) {
         const msg = payload?.message || `Erreur serveur (${res.status})`;
-      }
-      if (!resPr.ok) {
-        const msg = payloadPr?.message || `Erreur serveur (${resPr.status})`;
       }
     } catch (err) {
       console.error(err);
@@ -172,9 +119,7 @@ function initStockInPage() {
       hideLoader();
     }
 
-    if (data.product && data.quantity && data.unitPrice && data.entryDate) {
-      // successModal.classList.remove("hidden");
-    } else {
+    if (!(data.product && data.quantity && data.stockRaison)) {
       const firstEmptyField = form.querySelector(
         "input:required:invalid, select:required:invalid"
       );
@@ -248,5 +193,6 @@ function initStockInPage() {
     document.getElementById("page-loader").classList.add("hidden");
   }
   hideLoader();
+
   window.showSelected = showSelected;
 }

@@ -1,4 +1,4 @@
-function initAddPage() {
+function initEditPage() {
   showLoader();
   document.body.style.overflow = "auto";
   // === Configuration ===
@@ -18,16 +18,39 @@ function initAddPage() {
   const prQuantity = document.getElementById("prQuantity");
   const selectedCategory = document.getElementById("selectedCategory");
   const saveButton = document.getElementById("saveButton");
-  const cancelButton = document.getElementById("cancelButton");
   let user = JSON.parse(sessionStorage.getItem("user"));
+  let product = JSON.parse(sessionStorage.getItem("productObject"));
+
+  // fill edit form from product data;
+  productName.value = product.title;
+  const dataFromServer = product.field_description;
+
+  // Créer un élément temporaire pour parser le HTML
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = dataFromServer;
+
+  // Extraire le texte sans les balises
+  const textOnly = tempDiv.textContent || tempDiv.innerText || "";
+  productDescription.value = textOnly;
+
+  prQuantity.value = product.field_quantite_disponible;
+  selectedCategory.value = product.field_category.tid;
+  categoryText.textContent = product.field_category.title.trim();
+  categoryText.classList.remove("text-gray-500");
+
+  imagePreview.innerHTML = `
+    <div class="w-full h-full rounded-lg overflow-hidden flex items-center justify-center">
+      <img src="${product.field_images[0].image.url}" alt="preview" style="max-height:100%; max-width:100%; object-fit:contain;" />
+    </div>
+  `;
+  base64File = "fake file"
+  // FIn remplissage edit form
+
 
   function setFormBusy(busy = true) {
     saveButton.disabled = busy;
-    cancelButton.disabled = busy;
     saveButton.classList.toggle("opacity-60", busy);
     saveButton.classList.toggle("cursor-not-allowed", busy);
-    cancelButton.classList.toggle("opacity-60", busy);
-    cancelButton.classList.toggle("cursor-not-allowed", busy);
   }
 
   // === Image preview & validation ===
@@ -84,45 +107,35 @@ function initAddPage() {
     });
   });
 
-  // === Cancel button ===
-  cancelButton.addEventListener("click", (e) => {
-    e.preventDefault();
-    form.reset();
-    selectedCategory.value = "";
-    categoryText.textContent = "Sélectionner une catégorie";
-    categoryText.classList.add("text-gray-500");
-    clearImagePreview();
-    // showToast("Formulaire réinitialisé", "info");
-  });
-
   // === Validation ===
   function validateForm() {
     // Image obligatoire base64File
     const file = productImageInput.files[0];
     let nameError = document.getElementById("imgError");
     const input = document.querySelector("#imagePreview");
-
-    if (!file) {
-      nameError.textContent = "L'image du produit est requis.";
-      nameError.classList.remove("hidden");
-      input.classList.replace("border-gray-300", "border-red-500");
-      input.scrollIntoView({ behavior: "smooth", block: "center" });
-      return false;
-    }
-    if (!file.type.startsWith("image/")) {
-      nameError.textContent = "Le fichier doit être une image.";
-      nameError.classList.remove("hidden");
-      input.classList.replace("border-gray-300", "border-red-500");
-      input.scrollIntoView({ behavior: "smooth", block: "center" });
-      return false;
-    }
-    if (file.size > MAX_IMAGE_BYTES) {
-      // console.log("L’image dépasse 10MB.", "error");
-      nameError.textContent = "L’image dépasse 10MB.";
-      nameError.classList.remove("hidden");
-      input.classList.replace("border-gray-300", "border-red-500");
-      input.scrollIntoView({ behavior: "smooth", block: "center" });
-      return false;
+    if (base64File !== "fake file") {
+      if (!file) {
+        nameError.textContent = "L'image du produit est requis.";
+        nameError.classList.remove("hidden");
+        input.classList.replace("border-gray-300", "border-red-500");
+        input.scrollIntoView({ behavior: "smooth", block: "center" });
+        return false;
+      }
+      if (!file.type.startsWith("image/")) {
+        nameError.textContent = "Le fichier doit être une image.";
+        nameError.classList.remove("hidden");
+        input.classList.replace("border-gray-300", "border-red-500");
+        input.scrollIntoView({ behavior: "smooth", block: "center" });
+        return false;
+      }
+      if (file.size > MAX_IMAGE_BYTES) {
+        // console.log("L’image dépasse 10MB.", "error");
+        nameError.textContent = "L’image dépasse 10MB.";
+        nameError.classList.remove("hidden");
+        input.classList.replace("border-gray-300", "border-red-500");
+        input.scrollIntoView({ behavior: "smooth", block: "center" });
+        return false;
+      }
     }
 
     // Nom obligatoire (min 3 caractères)
@@ -174,16 +187,18 @@ function initAddPage() {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    await sendProduct();
+    await updateProduct();
   });
 
   // === AJAX envoi ===
-  async function sendProduct() {
+  async function updateProduct() {
     showLoader();
+    
     try {
       setFormBusy(true);
       const cat = document.getElementById("selectedCategory").value;
-      const newProduct = {
+      const editProductData = {
+        nid: parseInt(product.nid),
         title: productName.value.trim(),
         entity_type: "node",
         bundle: "product",
@@ -194,12 +209,15 @@ function initAddPage() {
         field_quantite_disponible: parseInt(prQuantity.value),
         field_images: base64File,
       };
+      if (base64File == "fake file") {
+        delete editProductData.field_images;
+      }
       const res = await fetch(API_BASE, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newProduct),
+        body: JSON.stringify(editProductData),
       });
 
       const payload = await res.json();
@@ -210,14 +228,8 @@ function initAddPage() {
     } catch (err) {
       console.error(err);
     } finally {
-      showNotification("Produit ajouté avec succès !", "success");
+      showNotification("Produit modifié avec succès !", "success");
       window.app.page = "all-products";
-      form.reset();
-      selectedCategory.value = "";
-      categoryText.textContent = "Sélectionner une catégorie";
-      categoryText.classList.add("text-gray-500");
-      clearImagePreview();
-      setFormBusy(false);
       hideLoader();
     }
   }
@@ -235,8 +247,6 @@ function initAddPage() {
       renderCategories();
     } catch (error) {
       console.error("Error loading categories:", error);
-    } finally {
-      hideLoader();
     }
   }
 

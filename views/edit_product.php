@@ -1,5 +1,5 @@
 <?php
-$header_title = "Add product";
+$header_title = "Modifier le produit";
 include __DIR__ . '/../includes/auth-nav.php'; ?>
 
 <div class="min-h-screen flex flex-col pt-12">
@@ -63,19 +63,14 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
                         </div>
                         <input type="hidden" id="selectedCategory" name="category" required>
                     </div>
-                </div>
-            </div>
-            <!-- Pricing -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Prix</h3>
-                <div>
-                    <label for="unitPrice" class="block text-sm font-medium text-gray-700 mb-2">Prix unitaire (Ar)
-                        *</label>
+                    <!-- quantité disponibles -->
                     <div class="relative">
-                        <input type="number" id="unitPrice" name="unitPrice" required
-                            class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg form-input text-sm"
-                            placeholder="0">
-                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">Ar
+                        <label for="prQuantity"
+                            class="block text-sm font-medium text-gray-700 mb-2">Quantité disponible</label>
+                        <div class="relative">
+                            <input type="number" id="prQuantity" required min="1"
+                                class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg form-input text-sm"
+                                placeholder="0" value="1">
                         </div>
                     </div>
                 </div>
@@ -85,7 +80,7 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
     <!-- Action Buttons -->
     <div class="sticky bottom-0 bg-white border-t border-gray-200 px-4 py-4">
         <div class="flex space-x-3">
-            <button type="button" id="cancelButton"
+            <button type="button" id="cancelButton" @click="page='all-products'"
                 class="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors cursor-pointer !rounded-button">
                 Annuler
             </button>

@@ -1,5 +1,5 @@
 <?php
-$header_title = "Category";
+$header_title = "Catégories";
 include __DIR__ . '/../includes/auth-nav.php'; ?>
 
 <div class="flex-1 px-4 py-12">

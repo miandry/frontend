@@ -112,7 +112,11 @@
                 </div>
                 <div v-if="page === 'add-product'">
                     <?php
-                    include 'mobile/views/add-product.php'; ?>
+                    include 'mobile/views/add_product.php'; ?>
+                </div>
+                <div v-if="page === 'edit-product'">
+                    <?php
+                    include 'mobile/views/edit_product.php'; ?>
                 </div>
                 <div v-if="page === 'all-products'">
                     <?php
@@ -120,16 +124,25 @@
                 </div>
                 <div v-if="page === 'add-category'">
                     <?php
-                    include 'mobile/views/add-category.php'; ?>
+                    include 'mobile/views/add_category.php'; ?>
                 </div>
                 <div v-if="page === 'stock-in'">
                     <?php
                     include 'mobile/views/stock_in.php'; ?>
                 </div>
+                <div v-if="page === 'stock-out'">
+                    <?php
+                    include 'mobile/views/stock_out.php'; ?>
+                </div>
+                <div v-if="page === 'all-stocks'">
+                    <?php
+                    include 'mobile/views/all_stocks.php'; ?>
+                </div>
             </div>
         </template>
     </div>
     <script src="/mobile/assets/js/auth/menu.js"></script>
+    <script src="/mobile/assets/js/main.js"></script>
 
     <script>
         const {
@@ -163,11 +176,14 @@
                 this.isReady = true;
             },
             mounted() {
-                if (this.page != 'all-products' ) {
+                const pagesToLoad = ['all-products', 'add-product', 'edit-product', 'all-stocks', 'stock-in', 'stock-out'];
+
+                if (!pagesToLoad.includes(this.page)) {
                     this.loadFor(this.page);
                 }
-                if (typeof initMenu === "function") {
+                if (typeof initMenu === "function" && typeof initMain === "function") {
                     initMenu();
+                    initMain();
                 }
             },
             watch: {
@@ -180,8 +196,9 @@
 
                     this.$nextTick(() => {
                         this.loadFor(newPage);
-                        if (typeof initMenu === "function") {
+                        if (typeof initMenu === "function" && typeof initMain === "function") {
                             initMenu();
+                            initMain();
                         }
                     });
                 }
@@ -219,13 +236,25 @@
                             src: '/mobile/assets/js/product/add-product.js',
                             init: 'initAddPage'
                         },
+                        'edit-product': {
+                            src: '/mobile/assets/js/product/edit-product.js',
+                            init: 'initEditPage'
+                        },
                         'add-category': {
                             src: '/mobile/assets/js/category/add-category.js',
                             init: 'initCategoryPage'
                         },
+                        'all-stocks': {
+                            src: '/mobile/assets/js/stock/all-stocks.js',
+                            init: 'initAllStocksPage'
+                        },
                         'stock-in': {
                             src: '/mobile/assets/js/stock/stock-in.js',
                             init: 'initStockInPage'
+                        },
+                        'stock-out': {
+                            src: '/mobile/assets/js/stock/stock-out.js',
+                            init: 'initStockOutPage'
                         }
                     };
 
@@ -245,8 +274,9 @@
                             window[config.init]();
                         }
                         app.$nextTick(() => {
-                            if (typeof initMenu === "function") {
+                            if (typeof initMenu === "function" && typeof initMain === "function") {
                                 initMenu();
+                                initMain();
                             }
                         });
                     };

@@ -35,16 +35,23 @@
         <div class="p-4">
             <div class="space-y-2">
                 <a href="javascript:void(0)" @click="page='dashboard'"
-                    class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
+                    :class="[
+                                'flex items-center px-4 py-3 rounded-lg cursor-pointer',
+                                page === 'dashboard' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'
+                            ]">
                     <div class="w-5 h-5 flex items-center justify-center mr-3">
-                        <i class="ri-dashboard-line text-gray-500"></i>
+                        <i :class="page === 'dashboard' ? 'ri-dashboard-line text-white' : 'ri-dashboard-line text-gray-500'"></i>
                     </div>
                     <span>Dashboard</span>
                 </a>
+
                 <a href="javascript:void(0)" @click="page='add-category'"
-                    class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
+                    :class="[
+                                'flex items-center px-4 py-3 rounded-lg cursor-pointer',
+                                page === 'add-category' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'
+                            ]">
                     <div class="w-5 h-5 flex items-center justify-center mr-3">
-                        <i class="ri-add-box-line text-gray-500"></i>
+                        <i :class="page === 'add-category' ? 'ri-add-box-line text-white' : 'ri-add-box-line text-gray-500'"></i>
                     </div>
                     <span>Categories</span>
                 </a>
@@ -59,11 +66,25 @@
                         </div>
                         <i class="ri-arrow-down-s-line transition-transform"></i>
                     </button>
-                    <div class="submenu pl-12 pr-4">
+
+                    <div class="submenu pl-6" :class="{
+                                'active': page === 'all-products' || page === 'add-product'
+                            }">
                         <a href="javascript:void(0)" @click="page='all-products'"
-                            class="block py-2 text-sm text-gray-600 hover:text-primary">List</a>
+                            :class="[
+                                    'block py-2 px-4 text-sm rounded-md',
+                                    page === 'all-products' ? 'bg-primary text-white' : 'text-gray-600 hover:text-primary'
+                                ]">
+                            List
+                        </a>
+
                         <a href="javascript:void(0)" @click="page='add-product'"
-                            class="block py-2 text-sm text-gray-600 hover:text-primary">Ajouter</a>
+                            :class="[
+                                    'block py-2 px-4 text-sm rounded-md',
+                                    page === 'add-product' ? 'bg-primary text-white' : 'text-gray-600 hover:text-primary'
+                                ]">
+                            Ajouter
+                        </a>
                     </div>
                 </div>
                 <div class="menu-section">
@@ -77,11 +98,33 @@
                         </div>
                         <i class="ri-arrow-down-s-line transition-transform"></i>
                     </button>
-                    <div class="submenu pl-12 pr-4">
+
+                    <div class="submenu pl-6" :class="{
+                                'active': page === 'all-stocks' || page === 'stock-in' || page === 'stock-out'
+                            }">
+                        <a href="javascript:void(0)" @click="page='all-stocks'"
+                            :class="[
+                                'block py-2 px-4 text-sm rounded-md',
+                                page === 'all-stocks' ? 'bg-primary text-white' : 'text-gray-600 hover:text-primary'
+                            ]">          
+                            List
+                        </a>
+
                         <a href="javascript:void(0)" @click="page='stock-in'"
-                            class="block py-2 text-sm text-gray-600 hover:text-primary">Nouvelle entrée</a>
-                        <a href="javascript:void(0)"
-                            class="block py-2 text-sm text-gray-600 hover:text-primary">Nouvelle sortie</a>
+                            :class="[
+                                    'block py-2 px-4 text-sm rounded-md',
+                                    page === 'stock-in' ? 'bg-primary text-white' : 'text-gray-600 hover:text-primary'
+                                ]">
+                            Nouvelle entrée
+                        </a>
+
+                        <a href="javascript:void(0)" @click="page='stock-out'"
+                            :class="[
+                                    'block py-2 px-4 text-sm rounded-md',
+                                    page === 'stock-out' ? 'bg-primary text-white' : 'text-gray-600 hover:text-primary'
+                                ]">
+                            Nouvelle sortie
+                        </a>
                     </div>
                 </div>
                 <div class="border-t border-gray-200 mt-4 pt-4">

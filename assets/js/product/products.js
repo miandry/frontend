@@ -1,4 +1,5 @@
 function initProductsPage() {
+  showLoader();
   let products = [];
   let pageNumber = 0;
   let totalProducts = 0;
@@ -16,8 +17,9 @@ function initProductsPage() {
   const closeFilterBtn = document.getElementById("closeFilterBtn");
   const prCategory = document.getElementById("prCategory");
   const prDate = document.getElementById("prDate");
-  
-  
+  // reinitialiser objet sur edit
+  sessionStorage.removeItem("productObject");
+
   filterBtn.addEventListener("click", function () {
     filterPanel.classList.add("active");
   });
@@ -27,7 +29,6 @@ function initProductsPage() {
 
   // Charger les catégories depuis l’API
   async function loadProducts() {
-    // showLoader();
     if (catFilterValue) {
       catQuery = catFilterValue;
     }
@@ -62,7 +63,7 @@ function initProductsPage() {
     } catch (error) {
       console.error("Error loading products:", error);
     } finally {
-      // hideLoader();
+      hideLoader();
     }
   }
 
@@ -74,7 +75,7 @@ function initProductsPage() {
     }
   });
 
-  applyFilters.addEventListener('click', function () {
+  applyFilters.addEventListener("click", function () {
     dateFilterValue = prDate.value;
     if (prCategory.value) {
       catFilterValue = "&filters[field_category][val]=" + prCategory.value;
@@ -83,7 +84,7 @@ function initProductsPage() {
     }
     loadProducts();
     filterPanel.classList.remove("active");
-  })
+  });
 
   function renderProducts() {
     const container = document.getElementById("productList");
@@ -109,9 +110,24 @@ function initProductsPage() {
                                   60
                                 )}</div>
                                 <div class="mt-2 flex items-center justify-between">
-                                    <span class="text-primary font-medium">${
-                                      pr.field_price
-                                    } Ar</span>
+                                  <div>
+                                    ${
+                                      pr.field_quantite_disponible > 0
+                                        ? `<span class="text-primary font-medium">En stock</span>`
+                                        : `<span class="text-red-500 font-medium">Épuisé</span>`
+                                    }
+                                  </div>
+                                  <div class="flex justify-start items-center gap-2">
+                                    <button class="edit-btn w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 hover:bg-blue-200 transition-colors"
+                                      onclick="editProduct(${pr.nid});">
+                                      <i class="ri-edit-line text-blue-600 text-sm"></i>
+                                    </button>
+                                    <button class="remove-btn w-6 h-6 flex items-center justify-center rounded-full bg-red-100 hover:bg-red-200 transition-colors" data-id="${
+                                      pr.nid
+                                    }" onclick="deleteProduct(${pr.nid});">
+                                      <i class="ri-delete-bin-line text-red-600 text-sm"></i>
+                                    </button>
+                                  </div>
                                 </div>
                             </div>
                         </div>
@@ -135,8 +151,41 @@ function initProductsPage() {
     if (pageNumber == totalPages - 1) {
       this.classList.add("hidden");
     }
-    console.log(pageNumber, totalPages);
   });
+
+  function editProduct(id) {
+    const productToEdit = products.find((p) => p.nid == id);
+    sessionStorage.setItem("productObject", JSON.stringify(productToEdit));
+    window.app.page = "edit-product";
+  }
+
+  async function deleteProduct(id) {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cette produit ?")) {
+      return;
+    }
+    showLoader();
+    try {
+      const response = await fetch(`/confirm/node/${id}/delete`, {
+        method: "POST",
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        window.scrollTo(0, 0);
+        showNotification("Produit supprimée avec succès", "success");
+        products = products.filter((pr) => pr.nid != id);
+        renderProducts();
+      } else {
+        throw new Error(result.message || "Erreur lors de la suppression");
+      }
+    } catch (error) {
+      showNotification("Erreur lors de la suppression: " + error.message, "error");
+      // console.error("Error deleting category:", error);
+    } finally {
+      hideLoader();
+    }
+  }
 
   function truncateHTML(html, maxLength) {
     const div = document.createElement("div");
@@ -158,6 +207,38 @@ function initProductsPage() {
     document.getElementById("page-loader").classList.add("hidden");
   }
 
+  function showNotification(message, type) {
+    const notification = document.createElement("div");
+    const bgColor =
+      type === "success"
+        ? "bg-green-500"
+        : type === "error"
+        ? "bg-red-500"
+        : "bg-primary";
+    notification.className = `fixed top-4 left-4 right-4 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg z-50 transform -translate-y-full transition-transform duration-300`;
+    notification.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                    <i class="ri-${
+                      type === "success"
+                        ? "check"
+                        : type === "error"
+                        ? "error-warning"
+                        : "information"
+                    }-line text-lg"></i>
+                    <span class="text-sm font-medium">${message}</span>
+                    </div>
+                    `;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+      notification.style.transform = "translateY(0)";
+    }, 100);
+    setTimeout(() => {
+      notification.style.transform = "translateY(-100%)";
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 3000);
+  }
   let categories = [];
 
   async function loadCategories() {
@@ -170,17 +251,19 @@ function initProductsPage() {
 
       // Construire le select
       const select = document.getElementById("prCategory");
-      categories.forEach(cat => {
+      categories.forEach((cat) => {
         const option = document.createElement("option");
-        option.value = cat.tid;       // si tid est l'identifiant
+        option.value = cat.tid; // si tid est l'identifiant
         option.textContent = cat.name; // si name est le libellé
         select.appendChild(option);
       });
-
     } catch (error) {
       console.error("Error loading categories:", error);
     }
   }
   loadCategories();
   loadProducts();
+
+  window.editProduct = editProduct;
+  window.deleteProduct = deleteProduct;
 }

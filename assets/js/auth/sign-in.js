@@ -1,4 +1,5 @@
 function initSignInPage() {
+  showLoader();
   document.body.style.overflow = "auto";
   const toggleButton = document.getElementById("togglePassword");
   const passwordInput = document.getElementById("passwordInput");
@@ -51,34 +52,50 @@ function initSignInPage() {
   }
 
   async function loginUser() {
-    const response = await fetch("/api/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: username.value,
-        pass: passwordInput.value,
-      }),
-    });
+    showLoader();
+    try {
+      const response = await fetch("/api/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: username.value,
+          pass: passwordInput.value,
+        }),
+      });
 
-    const data = await response.json();
-    if (data.status) {
-      // Construire l'objet user
-      const user = {
-        id: data.id,
-        username: data.name,
-        email: data.mail,
-        token: data.token,
-      };
-      // Stocker en session
-      sessionStorage.setItem("user", JSON.stringify(user));
+      const data = await response.json();
+      if (data.status) {
+        // Construire l'objet user
+        const user = {
+          id: data.id,
+          username: data.name,
+          email: data.mail,
+          token: data.token,
+        };
+        // Stocker en session
+        sessionStorage.setItem("user", JSON.stringify(user));
+      } else {
+        loginErrorMsg.classList.remove("hidden");
+      }
+    } catch (error) {
+      console.error("Une erreur est survenu: ", error);
+    } finally {
       // 🔹 notifier l'app Vue
       window.app.isLoggedIn = true;
       window.app.page = "dashboard";
       loginErrorMsg.classList.add("hidden");
-    } else {
-      loginErrorMsg.classList.remove("hidden");
+      hideLoader();
     }
   }
+
+  function showLoader() {
+    document.getElementById("page-loader").classList.remove("hidden");
+  }
+
+  function hideLoader() {
+    document.getElementById("page-loader").classList.add("hidden");
+  }
+  hideLoader();
 }

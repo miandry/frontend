@@ -1,5 +1,5 @@
 <?php
-$header_title = "All products";
+$header_title = "Produits";
 include __DIR__ . '/../includes/auth-nav.php'; ?>
 <div class="min-h-screen flex flex-col py-12">
     <div id="filterPanel" class="fixed top-0 left-0 right-0 bg-white shadow-lg z-50 filter-panel">
@@ -49,7 +49,7 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
                 class="flex-1 py-2.5 bg-primary text-white rounded-lg text-sm font-medium cursor-pointer !rounded-button">Appliquer</button>
         </div>
     </div>
-    <div class="product-list px-4">
+    <div class="product-list px-4 mb-12">
         <div class="mb-4 pt-8">
             <div class="flex items-center justify-between mb-4">
                 <input type="text" placeholder="Rechercher un produit..." id="searchProductInput"

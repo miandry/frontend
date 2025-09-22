@@ -1,5 +1,5 @@
 <?php
-$header_title = "Add Stock";
+$header_title = "Entrée de Stock";
 include __DIR__ . '/../includes/auth-nav.php'; ?>
 <style>
   .form-input {
@@ -16,23 +16,6 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
     overflow-y: auto;
   }
 
-  .success-animation {
-    animation: successPulse 0.6s ease-in-out;
-  }
-
-  @keyframes successPulse {
-    0% {
-      transform: scale(1);
-    }
-
-    50% {
-      transform: scale(1.05);
-    }
-
-    100% {
-      transform: scale(1);
-    }
-  }
 </style>
 <div class="min-h-screen flex flex-col">
   <!-- Main Content -->
@@ -50,7 +33,7 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
               <input type="text" id="productSearch" placeholder="Rechercher ou sélectionner un produit"
                 class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
                 required>
-                <input type="number" id="productId" class="hidden">
+              <input type="number" id="productId" class="hidden">
               <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                 <div class="w-5 h-5 flex items-center justify-center">
                   <i class="ri-search-line text-gray-400"></i>
@@ -66,9 +49,15 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
           </div>
           <!-- Quantity -->
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">
-              Quantité <span class="text-red-500">*</span>
-            </label>
+            <div class="flex items-center justify-between">
+              <label class="block text-sm font-medium text-gray-700">
+                Quantité <span class="text-red-500">*</span>
+              </label>
+              <p class="hidden qttyDipso text-sm text-green-500">
+                (<span id="qttyDipso"></span>
+                <span class="text-sm"> disponibles</span>)
+              </p>
+            </div>
             <input type="number" id="quantity" placeholder="Entrer la quantité" min="1"
               class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
               required>
@@ -79,6 +68,14 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
               Prix unitaire (Ar) <span class="text-red-500">*</span>
             </label>
             <input type="number" id="unitPrice" placeholder="0" min="0" step="0.01"
+              class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+              required>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">
+              Prix de vente (Ar) <span class="text-red-500">*</span>
+            </label>
+            <input type="number" id="sellingPrice" placeholder="0" min="0" step="0.01"
               class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
               required>
           </div>
@@ -98,6 +95,16 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
               <span id="totalValue" class="text-lg font-bold text-primary">Ar 0</span>
             </div>
           </div>
+          <!-- commentaire -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">
+              Description
+            </label>
+            <div class="relative">
+              <input type="text" id="productDescription" placeholder="Ajouter un commentaire"
+                class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm">
+            </div>
+          </div>
         </form>
       </div>
       <!-- Action Buttons -->
@@ -112,20 +119,4 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
       </div>
     </div>
   </main>
-</div>
-<!-- Success Modal -->
-<div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
-  <div class="bg-white rounded-xl p-6 max-w-sm w-full mx-4 success-animation">
-    <div class="text-center">
-      <div class="w-16 h-16 bg-secondary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
-        <i class="ri-check-line text-secondary text-2xl"></i>
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 mb-2">Entrée enregistrée</h3>
-      <p class="text-gray-600 text-sm mb-6">L'entrée de stock a été enregistrée avec succès dans le système.</p>
-      <button id="closeModal"
-        class="w-full bg-primary hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors cursor-pointer !rounded-button">
-        Continuer
-      </button>
-    </div>
-  </div>
 </div>
