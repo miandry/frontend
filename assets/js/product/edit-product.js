@@ -247,6 +247,8 @@ function initEditPage() {
       renderCategories();
     } catch (error) {
       console.error("Error loading categories:", error);
+    } finally {
+      hideLoader();
     }
   }
 
