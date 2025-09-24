@@ -140,9 +140,7 @@ function initEditStockOutPage() {
         status: 1,
         entity_type: "node",
         bundle: "product",
-        field_quantite_disponible: parseInt(
-          data.prQuantityDefault - qttyHandler()
-        ),
+        field_quantite_disponible: parseInt(data.prQuantityDefault) - qttyHandler(),
       };
 
       const res = await fetch(API_BASE, {

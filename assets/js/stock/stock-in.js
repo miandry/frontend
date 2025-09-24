@@ -134,9 +134,7 @@ function initStockInPage() {
         bundle: "product",
         field_prix_vente: parseFloat(data.sellingPrice),
         field_price: parseFloat(data.unitPrice),
-        field_quantite_disponible: parseInt(
-          data.prQuantityDefault + data.quantity
-        ),
+        field_quantite_disponible: parseInt(data.prQuantityDefault) + parseInt(data.quantity),
       };
 
       const res = await fetch(API_BASE, {
