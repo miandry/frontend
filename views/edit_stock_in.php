@@ -1,39 +1,7 @@
 <?php
-$header_title = "Sortie de Stock";
+$header_title = "Modifier entrée de Stock";
 include __DIR__ . '/../includes/auth-nav.php'; ?>
-<style>
-  .form-input {
-    transition: all 0.2s ease-in-out;
-  }
 
-  .form-input:focus {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-  }
-
-  .dropdown-menu {
-    max-height: 200px;
-    overflow-y: auto;
-  }
-
-  .success-animation {
-    animation: successPulse 0.6s ease-in-out;
-  }
-
-  @keyframes successPulse {
-    0% {
-      transform: scale(1);
-    }
-
-    50% {
-      transform: scale(1.05);
-    }
-
-    100% {
-      transform: scale(1);
-    }
-  }
-</style>
 <div class="min-h-screen flex flex-col">
   <!-- Main Content -->
   <main class="flex-1 pt-16 pb-6 px-4 max-w-md mx-auto w-full">
@@ -79,19 +47,42 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
               class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
               required>
           </div>
-          <!-- Raison -->
+          <!-- Unit Price -->
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700" for="stockRaison">
-              Raison <span class="text-red-500">*</span>
+            <label class="block text-sm font-medium text-gray-700">
+              Prix unitaire (Ar) <span class="text-red-500">*</span>
             </label>
-            <div class="relative">
-              <input type="text" id="stockRaison" placeholder="Ajouter une raison" required
-                class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm">
+            <input type="number" id="unitPrice" placeholder="0" min="0" step="0.01"
+              class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+              required>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">
+              Prix de vente (Ar) <span class="text-red-500">*</span>
+            </label>
+            <input type="number" id="sellingPrice" placeholder="0" min="0" step="0.01"
+              class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+              required>
+          </div>
+          <!-- Entry Date -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">
+              Date d'entrée <span class="text-red-500">*</span>
+            </label>
+            <input type="date" id="entryDate"
+              class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm cursor-pointer"
+              required>
+          </div>
+          <!-- Total Value Display -->
+          <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium text-gray-700">Valeur totale</span>
+              <span id="totalValue" class="text-lg font-bold text-primary">Ar 0</span>
             </div>
           </div>
           <!-- commentaire -->
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700" for="productDescription">
+            <label class="block text-sm font-medium text-gray-700">
               Description
             </label>
             <div class="relative">

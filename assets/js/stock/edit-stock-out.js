@@ -1,4 +1,4 @@
-function initStockOutPage() {
+function initEditStockOutPage() {
   //     PRODUCT SEARCH;
   showLoader();
   const productSearch = document.getElementById("productSearch");
@@ -6,8 +6,38 @@ function initStockOutPage() {
   const productId = document.getElementById("productId");
   let user = JSON.parse(sessionStorage.getItem("user"));
   let products = [];
+  let productRelated = null;
   let prQuantityDefault = null;
+  let qttyUpdated = null;
   const API_BASE = "/crud/save";
+  //initialiser valeur input
+  let stockToEdit = JSON.parse(sessionStorage.getItem("stockObject"));
+  const productDescription = document.getElementById("productDescription");
+  const stockQtty = document.getElementById("quantity");
+  const stockRaison = document.getElementById("stockRaison");
+  productId.value = stockToEdit.field_product_id.nid;
+  productSearch.value = stockToEdit.field_product_id.title;
+  stockRaison.value = stockToEdit.field_raison;
+  stockQtty.value = stockToEdit.field_quantite;
+  productDescription.value = stockToEdit.field_description;
+
+  async function getProductRelated(params) {
+    try {
+      const response = await fetch(
+        `/api/v2/node/product?filters[nid][val]=${stockToEdit.field_product_id.nid}`
+      );
+      const data = await response.json();
+      productRelated = data.rows;
+      prQuantityDefault = productRelated[0].field_quantite_disponible;
+      document.getElementById("qttyDipso").textContent = prQuantityDefault;
+      document.getElementsByClassName("qttyDipso")[0].classList.remove("hidden");
+    } catch (error) {
+      console.error("Error loading products:", error);
+    }
+  }
+  getProductRelated();
+
+
   productSearch.addEventListener("input", async function () {
     const searchTerm = this.value.trim().toLowerCase();
     // fait le recherche a partir de 4 caractere
@@ -59,7 +89,6 @@ function initStockOutPage() {
     productId.value = id;
     productSearch.value = title;
     prQuantityDefault = quantity;
-    document.getElementById("quantity").value = quantity;
     document.getElementById("qttyDipso").textContent = quantity;
     document.getElementsByClassName("qttyDipso")[0].classList.remove("hidden");
     productDropdown.classList.add("hidden");
@@ -83,13 +112,14 @@ function initStockOutPage() {
       pId: document.getElementById("productId").value,
       product: document.getElementById("productSearch").value,
       prQuantityDefault: prQuantityDefault,
-      quantity: document.getElementById("quantity").value,
-      productDescription: document.getElementById("productDescription").value,
-      stockRaison: document.getElementById("stockRaison").value
+      quantity: stockQtty.value,
+      productDescription: productDescription.value,
+      stockRaison: stockRaison.value,
     };
 
     try {
       const newStockIn = {
+        nid: parseInt(stockToEdit.nid),
         entity_type: "node",
         bundle: "stock",
         uid: user.id,
@@ -109,7 +139,7 @@ function initStockOutPage() {
         entity_type: "node",
         bundle: "product",
         field_quantite_disponible: parseInt(
-          data.prQuantityDefault - data.quantity
+          data.prQuantityDefault - qttyHandler()
         ),
       };
 
@@ -141,7 +171,7 @@ function initStockOutPage() {
     } catch (err) {
       console.error(err);
     } finally {
-      showNotification("Ajout effectué avec succès !", "success");
+      showNotification("Modification effectué avec succès !", "success");
       window.app.page = "all-stocks";
       hideLoader();
     }
@@ -210,6 +240,15 @@ function initStockOutPage() {
         document.body.removeChild(notification);
       }, 300);
     }, 3000);
+  }
+
+  function qttyHandler() {
+    if (stockQtty.value != stockToEdit.field_quantite) {
+      qttyUpdated = parseInt(stockQtty.value - stockToEdit.field_quantite);
+    } else {
+      qttyUpdated = 0;
+    }
+    return qttyUpdated;
   }
 
   function showLoader() {

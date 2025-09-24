@@ -1,4 +1,4 @@
-function initStockOutPage() {
+function initEditStockInPage() {
   //     PRODUCT SEARCH;
   showLoader();
   const productSearch = document.getElementById("productSearch");
@@ -6,8 +6,41 @@ function initStockOutPage() {
   const productId = document.getElementById("productId");
   let user = JSON.parse(sessionStorage.getItem("user"));
   let products = [];
+  let productRelated = null;
   let prQuantityDefault = null;
   const API_BASE = "/crud/save";
+  // initialise edit input
+  let stockToEdit = JSON.parse(sessionStorage.getItem("stockObject"));
+  productId.value = stockToEdit.field_product_id.nid;
+  productSearch.value = stockToEdit.field_product_id.title;
+  const stockQtty = document.getElementById("quantity");
+  const unitPrice = document.getElementById("unitPrice");
+  const sellingPrice = document.getElementById("sellingPrice");
+  const productDescription = document.getElementById("productDescription");
+  const entryDateInput = document.getElementById("entryDate");
+
+  stockQtty.value = stockToEdit.field_quantite;
+  unitPrice.value = stockToEdit.field_price;
+  sellingPrice.value = stockToEdit.field_prix_de_vente;
+  productDescription.value = stockToEdit.field_description;
+  entryDateInput.value = stockToEdit.field_date_entree;
+
+  async function getProductRelated() {
+    try {
+      const response = await fetch(
+        `/api/v2/node/product?filters[nid][val]=${stockToEdit.field_product_id.nid}`
+      );
+      const data = await response.json();
+      productRelated = data.rows;
+      prQuantityDefault = productRelated[0].field_quantite_disponible;
+      document.getElementById("qttyDipso").textContent = prQuantityDefault;
+      document.getElementsByClassName("qttyDipso")[0].classList.remove("hidden");
+    } catch (error) {
+      console.error("Error loading products:", error);
+    }
+  }
+  getProductRelated();
+
   productSearch.addEventListener("input", async function () {
     const searchTerm = this.value.trim().toLowerCase();
     // fait le recherche a partir de 4 caractere
@@ -59,7 +92,6 @@ function initStockOutPage() {
     productId.value = id;
     productSearch.value = title;
     prQuantityDefault = quantity;
-    document.getElementById("quantity").value = quantity;
     document.getElementById("qttyDipso").textContent = quantity;
     document.getElementsByClassName("qttyDipso")[0].classList.remove("hidden");
     productDropdown.classList.add("hidden");
@@ -74,32 +106,53 @@ function initStockOutPage() {
     }
   });
 
+  //   TOTAL CALCULATOR
+  const quantityInput = document.getElementById("quantity");
+  const unitPriceInput = document.getElementById("unitPrice");
+  const totalValueDisplay = document.getElementById("totalValue");
+
+  function calculateTotal() {
+    const quantity = parseFloat(quantityInput.value) || 0;
+    const unitPrice = parseFloat(unitPriceInput.value) || 0;
+    const total = quantity * unitPrice;
+    totalValueDisplay.textContent = `Ar ${total.toLocaleString("fr-FR")}`;
+  }
+  calculateTotal();
+  quantityInput.addEventListener("input", calculateTotal);
+  unitPriceInput.addEventListener("input", calculateTotal);
+
   //   FORM HANDLER
   const form = document.getElementById("stockEntryForm");
   form.addEventListener("submit", async function (e) {
-    e.preventDefault();
     showLoader();
+    e.preventDefault();
     const data = {
       pId: document.getElementById("productId").value,
       product: document.getElementById("productSearch").value,
       prQuantityDefault: prQuantityDefault,
-      quantity: document.getElementById("quantity").value,
-      productDescription: document.getElementById("productDescription").value,
-      stockRaison: document.getElementById("stockRaison").value
+      quantity: stockQtty.value,
+      unitPrice: unitPrice.value,
+      sellingPrice: sellingPrice.value,
+      entryDate: entryDateInput.value,
+      productDescription: productDescription.value,
     };
 
     try {
       const newStockIn = {
+        nid: parseInt(stockToEdit.nid),
         entity_type: "node",
         bundle: "stock",
         uid: user.id,
         status: 1,
         title: data.product + " stock",
         field_product_id: parseInt(data.pId),
+        field_price: parseFloat(data.unitPrice),
+        field_date_entree: data.entryDate,
         field_quantite: parseInt(data.quantity),
+        field_total_price: parseFloat(data.unitPrice * data.quantity),
         field_description: data.productDescription,
-        field_type: "Sortie",
-        field_raison: data.stockRaison,
+        field_type: "Entrée",
+        field_prix_de_vente: parseFloat(data.sellingPrice),
       };
 
       const productData = {
@@ -108,9 +161,9 @@ function initStockOutPage() {
         status: 1,
         entity_type: "node",
         bundle: "product",
-        field_quantite_disponible: parseInt(
-          data.prQuantityDefault - data.quantity
-        ),
+        field_prix_vente: parseFloat(data.sellingPrice),
+        field_price: parseFloat(data.unitPrice),
+        field_quantite_disponible: parseInt(data.prQuantityDefault) + qttyHandler(),
       };
 
       const res = await fetch(API_BASE, {
@@ -141,12 +194,14 @@ function initStockOutPage() {
     } catch (err) {
       console.error(err);
     } finally {
-      showNotification("Ajout effectué avec succès !", "success");
+      showNotification("Modification effectué avec succès !", "success");
       window.app.page = "all-stocks";
       hideLoader();
     }
 
-    if (!(data.product && data.quantity && data.stockRaison)) {
+    if (data.product && data.quantity && data.unitPrice && data.entryDate) {
+      // successModal.classList.remove("hidden");
+    } else {
       const firstEmptyField = form.querySelector(
         "input:required:invalid, select:required:invalid"
       );
@@ -212,6 +267,15 @@ function initStockOutPage() {
     }, 3000);
   }
 
+  function qttyHandler() {
+    if (stockQtty.value != stockToEdit.field_quantite) {
+      qttyUpdated = parseInt(stockQtty.value - stockToEdit.field_quantite);
+    } else {
+      qttyUpdated = 0;
+    }
+    return qttyUpdated;
+  }
+
   function showLoader() {
     document.getElementById("page-loader").classList.remove("hidden");
   }
@@ -220,6 +284,5 @@ function initStockOutPage() {
     document.getElementById("page-loader").classList.add("hidden");
   }
   hideLoader();
-
   window.showSelected = showSelected;
 }

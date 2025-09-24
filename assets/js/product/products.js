@@ -8,6 +8,7 @@ function initProductsPage() {
   let dateFilterValue = "desc";
   let catFilterValue = "";
   let catQuery = "";
+  let productIdToDelete = "";
   const perPage = 10;
   const loadMore = document.getElementById("loadMore");
   const searchProductInput = document.getElementById("searchProductInput");
@@ -17,6 +18,10 @@ function initProductsPage() {
   const closeFilterBtn = document.getElementById("closeFilterBtn");
   const prCategory = document.getElementById("prCategory");
   const prDate = document.getElementById("prDate");
+  // Modal for delete product
+  const deleteConfirmDialog = document.getElementById("deleteConfirmDialog");
+  const cancelDeletion = document.getElementById("cancelDeletion");
+  const confirmDeletion = document.getElementById("confirmDeletion");
   // reinitialiser objet sur edit
   sessionStorage.removeItem("productObject");
 
@@ -109,7 +114,7 @@ function initProductsPage() {
                                   pr.field_description,
                                   60
                                 )}</div>
-                                <div class="mt-2 flex items-center justify-between">
+                                <div class="mt-1 text-sm flex items-center justify-between">
                                   <div>
                                     ${
                                       pr.field_quantite_disponible > 0
@@ -124,7 +129,7 @@ function initProductsPage() {
                                     </button>
                                     <button class="remove-btn w-6 h-6 flex items-center justify-center rounded-full bg-red-100 hover:bg-red-200 transition-colors" data-id="${
                                       pr.nid
-                                    }" onclick="deleteProduct(${pr.nid});">
+                                    }" onclick="showDeleteModal(${pr.nid});">
                                       <i class="ri-delete-bin-line text-red-600 text-sm"></i>
                                     </button>
                                   </div>
@@ -159,10 +164,24 @@ function initProductsPage() {
     window.app.page = "edit-product";
   }
 
-  async function deleteProduct(id) {
-    if (!confirm("Êtes-vous sûr de vouloir supprimer cette produit ?")) {
-      return;
+  function showDeleteModal(id) {
+    productIdToDelete = id;
+    deleteConfirmDialog.classList.remove("hidden");
+  }
+
+  cancelDeletion.addEventListener("click", function () {
+    productIdToDelete = "";
+    deleteConfirmDialog.classList.add("hidden");
+  });
+
+  confirmDeletion.addEventListener("click", function () {
+    if (productIdToDelete) {
+      deleteProduct(productIdToDelete);
     }
+    deleteConfirmDialog.classList.add("hidden");
+  });
+
+  async function deleteProduct(id) {
     showLoader();
     try {
       const response = await fetch(`/confirm/node/${id}/delete`, {
@@ -180,9 +199,12 @@ function initProductsPage() {
         throw new Error(result.message || "Erreur lors de la suppression");
       }
     } catch (error) {
-      showNotification("Erreur lors de la suppression: " + error.message, "error");
-      // console.error("Error deleting category:", error);
+      showNotification(
+        "Erreur lors de la suppression: " + error.message,
+        "error"
+      );
     } finally {
+      productIdToDelete = "";
       hideLoader();
     }
   }
@@ -265,5 +287,5 @@ function initProductsPage() {
   loadProducts();
 
   window.editProduct = editProduct;
-  window.deleteProduct = deleteProduct;
+  window.showDeleteModal = showDeleteModal;
 }

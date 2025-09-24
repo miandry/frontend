@@ -2,6 +2,11 @@ function initCategoryPage() {
   let categories = [];
   let editingCategory = null;
   let user = JSON.parse(sessionStorage.getItem("user"));
+  let categoryIdToDelete = "";
+  // Modal for delete product
+  const deleteConfirmDialog = document.getElementById("deleteConfirmDialog");
+  const cancelDeletion = document.getElementById("cancelDeletion");
+  const confirmDeletion = document.getElementById("confirmDeletion");
 
   loadCategories();
   setupEventListeners();
@@ -69,7 +74,7 @@ function initCategoryPage() {
                             <i class="ri-edit-line text-sm"></i>
                         </button>
                         <button 
-                            onclick="deleteCategory(${category.tid})"
+                            onclick="showDeleteModal(${category.tid})"
                             class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
                         >
                             <i class="ri-delete-bin-line text-sm"></i>
@@ -140,10 +145,25 @@ function initCategoryPage() {
     }
   }
 
-  async function deleteCategory(id) {
-    if (!confirm("Êtes-vous sûr de vouloir supprimer cette catégorie ?")) {
-      return;
+
+  function showDeleteModal(id) {
+    categoryIdToDelete = id;
+    deleteConfirmDialog.classList.remove("hidden");
+  }
+
+  cancelDeletion.addEventListener("click", function () {
+    categoryIdToDelete = "";
+    deleteConfirmDialog.classList.add("hidden");
+  });
+
+  confirmDeletion.addEventListener("click", function () {
+    if (categoryIdToDelete) {
+      deleteCategory(categoryIdToDelete);
     }
+    deleteConfirmDialog.classList.add("hidden");
+  });
+
+  async function deleteCategory(id) {
     showLoader();
     try {
       const response = await fetch(`/confirm/taxonomy_term/${id}/delete`, {
@@ -208,5 +228,5 @@ function initCategoryPage() {
   }
 
   window.editCategory = editCategory;
-  window.deleteCategory = deleteCategory;
+  window.showDeleteModal = showDeleteModal;
 }

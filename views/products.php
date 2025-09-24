@@ -69,3 +69,14 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
         <i class="ri-add-fill text-white text-2xl"></i>
     </button>
 </div>
+<div id="deleteConfirmDialog" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="relative bg-white rounded-xl p-6 w-80 space-y-4">
+        <h3 class="text-lg font-medium text-gray-900">Delete product</h3>
+        <p class="text-gray-600">Cette action est irréversible. Êtes-vous sûr de vouloir supprimer ce produit ?</p>
+        <div class="flex space-x-3">
+            <button id="cancelDeletion" class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium">Annuler</button>
+            <button id="confirmDeletion" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium">Supprimer</button>
+        </div>
+    </div>
+</div>

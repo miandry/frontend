@@ -36,6 +36,13 @@
         }
     </script>
     <style>
+        body {
+            touch-action: manipulation;
+            /* bloque double-tap zoom */
+            overscroll-behavior: none;
+            /* évite comportements inattendus */
+        }
+
         :where([class^="ri-"])::before {
             content: "\f3c2";
         }
@@ -134,6 +141,14 @@
                     <?php
                     include 'mobile/views/stock_out.php'; ?>
                 </div>
+                <div v-if="page === 'edit-stock-in'">
+                    <?php
+                    include 'mobile/views/edit_stock_in.php'; ?>
+                </div>
+                <div v-if="page === 'edit-stock-out'">
+                    <?php
+                    include 'mobile/views/edit_stock_out.php'; ?>
+                </div>
                 <div v-if="page === 'all-stocks'">
                     <?php
                     include 'mobile/views/all_stocks.php'; ?>
@@ -176,7 +191,17 @@
                 this.isReady = true;
             },
             mounted() {
-                const pagesToLoad = ['all-products', 'add-product', 'edit-product', 'all-stocks', 'stock-in', 'stock-out'];
+                const pagesToLoad = [
+                    'all-products',
+                    'add-product',
+                    'edit-product',
+                    'add-category',
+                    'all-stocks',
+                    'stock-in',
+                    'stock-out',
+                    'edit-stock-in',
+                    'edit-stock-out'
+                ];
 
                 if (!pagesToLoad.includes(this.page)) {
                     this.loadFor(this.page);
@@ -255,6 +280,14 @@
                         'stock-out': {
                             src: '/mobile/assets/js/stock/stock-out.js',
                             init: 'initStockOutPage'
+                        },
+                        'edit-stock-in': {
+                            src: '/mobile/assets/js/stock/edit-stock-in.js',
+                            init: 'initEditStockInPage'
+                        },
+                        'edit-stock-out': {
+                            src: '/mobile/assets/js/stock/edit-stock-out.js',
+                            init: 'initEditStockOutPage'
                         }
                     };
 

@@ -1,39 +1,7 @@
 <?php
-$header_title = "Sortie de Stock";
+$header_title = "Modifier sortie de Stock";
 include __DIR__ . '/../includes/auth-nav.php'; ?>
-<style>
-  .form-input {
-    transition: all 0.2s ease-in-out;
-  }
 
-  .form-input:focus {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-  }
-
-  .dropdown-menu {
-    max-height: 200px;
-    overflow-y: auto;
-  }
-
-  .success-animation {
-    animation: successPulse 0.6s ease-in-out;
-  }
-
-  @keyframes successPulse {
-    0% {
-      transform: scale(1);
-    }
-
-    50% {
-      transform: scale(1.05);
-    }
-
-    100% {
-      transform: scale(1);
-    }
-  }
-</style>
 <div class="min-h-screen flex flex-col">
   <!-- Main Content -->
   <main class="flex-1 pt-16 pb-6 px-4 max-w-md mx-auto w-full">

@@ -7,28 +7,20 @@ function initAllStocksPage() {
   let searchTerm = "";
   let dateFilterValue = "desc";
   let stType = "";
+  let typeFilterValue = "";
+  let typeFilterQuery = "";
+  let stockIdToDelete = "";
   const perPage = 10;
   const loadMore = document.getElementById("loadMore");
   const searchStockInput = document.getElementById("searchStockInput");
   // filter variable
-  const filterBtn = document.getElementById("filterBtn");
-  const filterPanel = document.getElementById("filterPanel");
-  const closeFilterBtn = document.getElementById("closeFilterBtn");
-  const prCategory = document.getElementById("prCategory");
-  const prDate = document.getElementById("prDate");
-
-  filterBtn.addEventListener("click", function () {
-    filterPanel.classList.add("active");
-  });
-  closeFilterBtn.addEventListener("click", function () {
-    filterPanel.classList.remove("active");
-  });
+  const typeFilter = document.getElementById("typeFilter");
 
   // Charger les catégories depuis l’API
   async function loadStocks() {
     try {
       const response = await fetch(
-        `/api/v2/node/stock?sort[val]=nid&sort[op]=${dateFilterValue}&filters[title][val]=${searchTerm}&filters[title][op]=CONTAINS&${stType}&pager=${pageNumber}&offset=${perPage}`
+        `/api/v2/node/stock?sort[val]=nid&sort[op]=${dateFilterValue}${typeFilterQuery}&filters[title][val]=${searchTerm}&filters[title][op]=CONTAINS&${stType}&pager=${pageNumber}&offset=${perPage}`
       );
       const dataArray = await response.json();
       let data = dataArray.rows;
@@ -69,10 +61,19 @@ function initAllStocksPage() {
     }
   });
 
-  applyFilters.addEventListener("click", function () {
-    dateFilterValue = prDate.value;
+  typeFilter.addEventListener("change", function () {
+    showLoader();
+    // récupère la valeur sélectionnée
+    typeFilterValue = typeFilter.value;
+    if (typeFilterValue) {
+      // tu peux maintenant l’utiliser dans ton instruction
+      typeFilterQuery = `&filters[field_type][val]=${encodeURIComponent(
+        typeFilterValue
+      )}`;
+    } else {
+      typeFilterQuery = "";
+    }
     loadStocks();
-    filterPanel.classList.remove("active");
   });
 
   function renderStocks() {
@@ -82,9 +83,11 @@ function initAllStocksPage() {
       container.innerHTML = stocks
         .map(
           (st) => `
-                    <div class="bg-white p-2 rounded-lg shadow-sm border ${st.field_type == "Entrée" ? "border-green-500" : "border-red-500"}" data-id="${
-                      st.nid
-                    }">
+                    <div class="bg-white p-2 rounded-lg shadow-sm border ${
+                      st.field_type == "Entrée"
+                        ? "border-green-500"
+                        : "border-red-500"
+                    }" data-id="${st.nid}">
                         <div class="flex space-x-4 items-center">
                             <div class="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
                                 <img src=""
@@ -95,7 +98,7 @@ function initAllStocksPage() {
                                   st.title
                                 }</h3>
                                 <div class="text-sm text-gray-500 mt-1"></div>
-                                <div class="mt-2 flex items-center justify-between">
+                                <div class="mt-1 flex items-center justify-between text-sm">
                                   ${
                                     st.field_raison
                                       ? `<span class="text-blue-500">${st.field_raison}</span>`
@@ -105,9 +108,28 @@ function initAllStocksPage() {
                                       `
                                   }
                                 </div>
-                                <div class="mt-2 flex items-center justify-between">
-                                    <span class="text-purple-500">Qtté: ${st.field_quantite}</span>
-                                    <span class="${st.field_type == "Entrée" ? "text-green-500" : "text-red-500"}">${st.field_type == "Entrée" ? "Entrée" : "Sortie"}</span>
+                                <div class="mt-1 text-sm flex items-center justify-between">
+                                    <span class="${
+                                      st.field_type == "Entrée"
+                                        ? "text-green-500"
+                                        : "text-red-500"
+                                    }">${
+            st.field_type == "Entrée" ? "Entrée" : "Sortie"
+          }</span>
+                                    <span class="text-purple-500">Qtté: ${
+                                      st.field_quantite
+                                    }</span>
+                                    <div class="flex justify-start items-center gap-2">
+                                      <button class="edit-btn w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 hover:bg-blue-200 transition-colors"
+                                        onclick="editStock(${st.nid});">
+                                        <i class="ri-edit-line text-blue-600 text-sm"></i>
+                                      </button>
+                                      <button class="remove-btn w-6 h-6 flex items-center justify-center rounded-full bg-red-100 hover:bg-red-200 transition-colors" onclick="showDeleteModal(${
+                                        st.nid
+                                      });">
+                                        <i class="ri-delete-bin-line text-red-600 text-sm"></i>
+                                      </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -133,6 +155,61 @@ function initAllStocksPage() {
     }
   });
 
+  function showDeleteModal(id) {
+    stockIdToDelete = id;
+    deleteConfirmDialog.classList.remove("hidden");
+  }
+
+  cancelDeletion.addEventListener("click", function () {
+    stockIdToDelete = "";
+    deleteConfirmDialog.classList.add("hidden");
+  });
+
+  confirmDeletion.addEventListener("click", function () {
+    if (stockIdToDelete) {
+      deleteStock(stockIdToDelete);
+    }
+    deleteConfirmDialog.classList.add("hidden");
+  });
+
+  function editStock(id) {
+    const stockToEdit = stocks.find((st) => st.nid == id);
+    sessionStorage.setItem("stockObject", JSON.stringify(stockToEdit));
+    if (stockToEdit.field_type == "Entrée") {
+      window.app.page = "edit-stock-in";
+    } else {
+      window.app.page = "edit-stock-out";
+    }
+  }
+
+  async function deleteStock(id) {
+    showLoader();
+    try {
+      const response = await fetch(`/confirm/node/${id}/delete`, {
+        method: "POST",
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        window.scrollTo(0, 0);
+        showNotification("Stock supprimée avec succès", "success");
+        stocks = stocks.filter((pr) => pr.nid != id);
+        renderStocks();
+      } else {
+        throw new Error(result.message || "Erreur lors de la suppression");
+      }
+    } catch (error) {
+      showNotification(
+        "Erreur lors de la suppression: " + error.message,
+        "error"
+      );
+    } finally {
+      stockIdToDelete = "";
+      hideLoader();
+    }
+  }
+
   function truncateHTML(html, maxLength) {
     const div = document.createElement("div");
     div.innerHTML = html;
@@ -145,6 +222,39 @@ function initAllStocksPage() {
     return text;
   }
 
+  function showNotification(message, type) {
+    const notification = document.createElement("div");
+    const bgColor =
+      type === "success"
+        ? "bg-green-500"
+        : type === "error"
+        ? "bg-red-500"
+        : "bg-primary";
+    notification.className = `fixed top-4 left-4 right-4 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg z-50 transform -translate-y-full transition-transform duration-300`;
+    notification.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                    <i class="ri-${
+                      type === "success"
+                        ? "check"
+                        : type === "error"
+                        ? "error-warning"
+                        : "information"
+                    }-line text-lg"></i>
+                    <span class="text-sm font-medium">${message}</span>
+                    </div>
+                    `;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+      notification.style.transform = "translateY(0)";
+    }, 100);
+    setTimeout(() => {
+      notification.style.transform = "translateY(-100%)";
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 3000);
+  }
+
   function showLoader() {
     document.getElementById("page-loader").classList.remove("hidden");
   }
@@ -154,4 +264,6 @@ function initAllStocksPage() {
   }
 
   loadStocks();
+  window.showDeleteModal = showDeleteModal;
+  window.editStock = editStock;
 }

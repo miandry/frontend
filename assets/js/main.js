@@ -68,6 +68,8 @@ function initMain() {
   window.addEventListener(
     "touchmove",
     function (e) {
+        
+
       if (e.touches && e.touches.length > 1) {
         // si plus d'un doigt, c'est probablement un pinch ou rotation -> bloquer
         e.preventDefault();
@@ -102,11 +104,11 @@ function initMain() {
   /****************************************************************
    * 4) Sécurité : s'assurer que body ne dépasse pas largeur viewport
    ****************************************************************/
-  function clampBodyWidth() {
-    document.documentElement.style.overflowX = "hidden";
-    document.body.style.overflowX = "hidden";
-    document.body.style.maxWidth = "100vw";
-  }
+function clampBodyWidth() {
+  document.documentElement.style.setProperty("overflow-x", "hidden", "important");
+  document.body.style.setProperty("overflow-x", "hidden", "important");
+  document.body.style.setProperty("max-width", "100vw", "important");
+}
   // initial + on resize
   clampBodyWidth();
   window.addEventListener("resize", clampBodyWidth);

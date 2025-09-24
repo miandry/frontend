@@ -55,11 +55,17 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
         <div class="mb-4 pt-8">
             <div class="flex items-center justify-between mb-4">
                 <input type="text" placeholder="Rechercher un produit..." id="searchStockInput"
-                    class="w-full px-4 py-2 bg-gray-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                <button id="filterBtn"
-                    class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg cursor-pointer hidden">
-                    <i class="ri-filter-3-line text-gray-600"></i>
-                </button>
+                    class="w-3/4 px-4 py-2 bg-gray-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                <div class="w-1/4 ms-2 h-10">
+                    <div class="relative">
+                        <select id="typeFilter" class="w-full h-10 px-2 flex items-center justify-center bg-gray-100 rounded-lg cursor-pointer">
+                            <option value="">Type</option>
+                            <option value="Entrée">Entrée</option>
+                            <option value="Sortie">Sortie</option>
+                        </select>
+                        <!-- <div class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-500"></i></div> -->
+                    </div>
+                </div>
             </div>
         </div>
         <div class="space-y-4" id="stockList">
@@ -67,4 +73,16 @@ include __DIR__ . '/../includes/auth-nav.php'; ?>
         </div>
     </div>
     <button class="w-full flex items-center justify-center text-primary mt-4" id="loadMore">Load more...</button>
+</div>
+
+<div id="deleteConfirmDialog" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="relative bg-white rounded-xl p-6 w-80 space-y-4">
+        <h3 class="text-lg font-medium text-gray-900">Supprimer cette stock</h3>
+        <p class="text-gray-600">Cette action est irréversible. Êtes-vous sûr de vouloir supprimer cette stock ?</p>
+        <div class="flex space-x-3">
+            <button id="cancelDeletion" class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium">Annuler</button>
+            <button id="confirmDeletion" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium">Supprimer</button>
+        </div>
+    </div>
 </div>

@@ -36,11 +36,11 @@ function initMenu() {
     confirmDialog.innerHTML = `
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
       <div class="relative bg-white rounded-xl p-6 w-80 space-y-4">
-        <h3 class="text-lg font-medium text-gray-900">Confirm Logout</h3>
-        <p class="text-gray-600">Are you sure you want to logout?</p>
+        <h3 class="text-lg font-medium text-gray-900">Confirmer la déconnexion</h3>
+        <p class="text-gray-600">Êtes-vous sûr de vouloir vous déconnecter ?</p>
         <div class="flex space-x-3">
-          <button id="cancelLogout" class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium">Cancel</button>
-          <button id="confirmLogout" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium">Logout</button>
+          <button id="cancelLogout" class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium">Anuller</button>
+          <button id="confirmLogout" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium">Se déconnecter</button>
         </div>
       </div>
     `;

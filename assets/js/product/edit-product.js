@@ -208,6 +208,7 @@ function initEditPage() {
         status: 1,
         field_quantite_disponible: parseInt(prQuantity.value),
         field_images: base64File,
+        field_sku: "REF-" + product.nid,
       };
       if (base64File == "fake file") {
         delete editProductData.field_images;

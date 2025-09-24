@@ -207,6 +207,24 @@ function initAddPage() {
       if (!res.ok) {
         const msg = payload?.message || `Erreur serveur (${res.status})`;
       }
+
+      const editProductData = {
+        nid: parseInt(payload.item),
+        title: productName.value.trim(),
+        entity_type: "node",
+        bundle: "product",
+        uid: user.id,
+        status: 1,
+        field_sku: "REF-" + payload.item,
+      };
+      const resEdit = await fetch(API_BASE, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editProductData),
+      });
+
     } catch (err) {
       console.error(err);
     } finally {

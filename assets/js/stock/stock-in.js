@@ -91,8 +91,6 @@ function initStockInPage() {
   //   FORM HANDLER
   const form = document.getElementById("stockEntryForm");
   const entryDateInput = document.getElementById("entryDate");
-  // const successModal = document.getElementById("successModal");
-  const closeModal = document.getElementById("closeModal");
   const today = new Date().toISOString().split("T")[0];
   entryDateInput.value = today;
   form.addEventListener("submit", async function (e) {
@@ -135,7 +133,7 @@ function initStockInPage() {
         field_prix_vente: parseFloat(data.sellingPrice),
         field_price: parseFloat(data.unitPrice),
         field_quantite_disponible: parseInt(
-          data.prQuantityDefault - data.quantity
+          data.prQuantityDefault + data.quantity
         ),
       };
 
