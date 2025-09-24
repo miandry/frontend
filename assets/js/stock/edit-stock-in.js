@@ -6,6 +6,7 @@ function initEditStockInPage() {
   const productId = document.getElementById("productId");
   let user = JSON.parse(sessionStorage.getItem("user"));
   let products = [];
+  let key = "";
   let productRelated = null;
   let prQuantityDefault = null;
   const API_BASE = "/crud/save";
@@ -49,8 +50,9 @@ function initEditStockInPage() {
     } else if (searchTerm.length > 3) {
       // Charger les catégories depuis l’API
       try {
+        key = searchTerm.toLowerCase().startsWith("ref-") ? "field_sku" : "title";
         const response = await fetch(
-          `/api/v2/node/product?filters[title][val]=${searchTerm}&filters[title][op]=CONTAINS&sort[val]=nid&sort[op]=desc`
+          `/api/v2/node/product?filters[${key}][val]=${searchTerm}&filters[${key}][op]=CONTAINS&sort[val]=nid&sort[op]=desc`
         );
         const data = await response.json();
         products = data.rows;

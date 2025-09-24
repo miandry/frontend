@@ -8,6 +8,7 @@ function initProductsPage() {
   let dateFilterValue = "desc";
   let catFilterValue = "";
   let catQuery = "";
+  let key = "";
   let productIdToDelete = "";
   const perPage = 10;
   const loadMore = document.getElementById("loadMore");
@@ -37,9 +38,10 @@ function initProductsPage() {
     if (catFilterValue) {
       catQuery = catFilterValue;
     }
+    key = searchTerm.toLowerCase().startsWith("ref-") ? "field_sku" : "title";
     try {
       const response = await fetch(
-        `/api/v2/node/product?sort[val]=nid&sort[op]=${dateFilterValue}&filters[title][val]=${searchTerm}${catQuery}&filters[title][op]=CONTAINS&pager=${pageNumber}&offset=${perPage}`
+        `/api/v2/node/product?sort[val]=nid&sort[op]=${dateFilterValue}&filters[${key}][val]=${searchTerm}&filters[${key}][op]=CONTAINS${catQuery}&pager=${pageNumber}&offset=${perPage}`
       );
       const dataArray = await response.json();
       let data = dataArray.rows;
@@ -115,6 +117,9 @@ function initProductsPage() {
                                   60
                                 )}</div>
                                 <div class="mt-1 text-sm flex items-center justify-between">
+                                  <div>
+                                    <span class="text-yellow-500 font-medium">${pr.field_sku}</span>
+                                  </div>
                                   <div>
                                     ${
                                       pr.field_quantite_disponible > 0
