@@ -87,6 +87,15 @@
         .filter-panel.active {
             transform: translateY(0);
         }
+
+        .stock-entry {
+            color: #10b981;
+            background-color: #d1fae5;
+        }
+        .stock-out {
+            color: #f53d3d;
+            background-color: #f9c4c4;
+        }
     </style>
 </head>
 
@@ -153,6 +162,10 @@
                     <?php
                     include 'mobile/views/all_stocks.php'; ?>
                 </div>
+                <div v-if="page === 'detail-stock'">
+                    <?php
+                    include 'mobile/views/stock_detail.php'; ?>
+                </div>
             </div>
         </template>
     </div>
@@ -200,7 +213,8 @@
                     'stock-in',
                     'stock-out',
                     'edit-stock-in',
-                    'edit-stock-out'
+                    'edit-stock-out',
+                    'detail-stock'
                 ];
 
                 if (!pagesToLoad.includes(this.page)) {
@@ -288,6 +302,10 @@
                         'edit-stock-out': {
                             src: '/mobile/assets/js/stock/edit-stock-out.js',
                             init: 'initEditStockOutPage'
+                        },
+                        'detail-stock': {
+                            src: '/mobile/assets/js/stock/detail.js',
+                            init: 'initStockDetailPage'
                         }
                     };
 

@@ -87,41 +87,41 @@ function initAllStocksPage() {
                       st.field_type == "Entrée"
                         ? "border-green-500"
                         : "border-red-500"
-                    }" data-id="${st.nid}">
+                    }" data-id="${st.nid}" onclick="showStock(event, ${st.nid});">
                         <div class="flex space-x-4 items-center">
-                            <div class="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
-                                <img src=""
-                                    class="w-full h-full object-cover" alt="Image produit">
+                            <div class="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden text-center flex items-center align-center">
+                                <span class="text-sm text-gray-500">${formatDate(st.created)}</span>
                             </div>
                             <div class="flex-1">
                                 <h3 class="font-medium text-gray-900">${
                                   st.title
                                 }</h3>
                                 <div class="text-sm text-gray-500 mt-1"></div>
-                                <div class="mt-1 flex items-center justify-between text-sm">
-                                  ${
+                                <div class="mt-1 flex items-center text-sm">
+                                <span class="text-gray-500 mr-2">Auteur: </span><span class="text-blue-500 capitalize">${st.uid.name}</span>
+                                  <!--/*${
                                     st.field_raison
                                       ? `<span class="text-blue-500">${st.field_raison}</span>`
                                       : `
                                         <span title="Prix" class="text-yellow-500">PA: ${st.field_price} Ar</span>
                                         <span title="Prix de vente" class="text-green-500">PV: ${st.field_prix_de_vente} Ar</span>
                                       `
-                                  }
+                                  }*/-->
                                 </div>
                                 <div class="mt-1 text-sm flex items-center justify-between">
                                     <span class="${
                                       st.field_type == "Entrée"
                                         ? "text-green-500"
                                         : "text-red-500"
-                                    }">${
-            st.field_type == "Entrée" ? "Entrée" : "Sortie"
-          }</span>
+                                                                }">${
+                                        st.field_type == "Entrée" ? "Entrée" : "Sortie"
+                                      }</span>
                                     <span class="text-purple-500">Qtté: ${
                                       st.field_quantite
                                     }</span>
                                     <div class="flex justify-start items-center gap-2">
                                       <button class="edit-btn w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 hover:bg-blue-200 transition-colors"
-                                        onclick="editStock(${st.nid});">
+                                        onclick="editStock(event,${st.nid});">
                                         <i class="ri-edit-line text-blue-600 text-sm"></i>
                                       </button>
                                       <button class="remove-btn w-6 h-6 flex items-center justify-center rounded-full bg-red-100 hover:bg-red-200 transition-colors" onclick="showDeleteModal(${
@@ -172,7 +172,9 @@ function initAllStocksPage() {
     deleteConfirmDialog.classList.add("hidden");
   });
 
-  function editStock(id) {
+  function editStock(e, id) {
+    e.stopPropagation();
+    e.preventDefault();
     const stockToEdit = stocks.find((st) => st.nid == id);
     sessionStorage.setItem("stockObject", JSON.stringify(stockToEdit));
     if (stockToEdit.field_type == "Entrée") {
@@ -180,6 +182,14 @@ function initAllStocksPage() {
     } else {
       window.app.page = "edit-stock-out";
     }
+  }
+
+  function showStock(e, id) {
+    e.stopPropagation();
+    e.preventDefault();
+    const stockToShow = stocks.find((st) => st.nid == id);
+    sessionStorage.setItem("stockObjectToShow", JSON.stringify(stockToShow));
+    window.app.page = "detail-stock";
   }
 
   async function deleteStock(id) {
@@ -221,6 +231,21 @@ function initAllStocksPage() {
 
     return text;
   }
+
+function formatDate(timestamp) {
+  const date = new Date(timestamp * 1000); // convertir en ms
+
+  let formatted = date.toLocaleDateString("fr-FR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric"
+  });
+
+  // supprimer le "." éventuel après "sept."
+  formatted = formatted.replace('.', '');
+
+  return formatted;
+}
 
   function showNotification(message, type) {
     const notification = document.createElement("div");
@@ -266,4 +291,5 @@ function initAllStocksPage() {
   loadStocks();
   window.showDeleteModal = showDeleteModal;
   window.editStock = editStock;
+  window.showStock = showStock;
 }
